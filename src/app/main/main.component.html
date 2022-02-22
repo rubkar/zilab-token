@@ -1,4 +1,3 @@
-<div *ngIf='true'>REMOVE THIS</div>
 <section class="banner mg-100">
   <div class="banner-main">
     <div class="container">
@@ -7,14 +6,19 @@
           <div class="crypto-discount-cover">
             <div class="c1">
               <h2>
-                <b>Cryptoland Just<br> Entered</b>
+                <b
+                  >Cryptoland Just<br />
+                  Entered</b
+                >
                 <span>the Real World</span>
               </h2>
             </div>
             <div class="c2">
               <p>
-                spend real fights effective anything extra by leading.Mouthwatering leading how<br>
-                real formula also locked-in have can mountain thought.Jumbo plus shine sale.
+                spend real fights effective anything extra by
+                leading.Mouthwatering leading how<br />
+                real formula also locked-in have can mountain thought.Jumbo plus
+                shine sale.
               </p>
             </div>
             <div class="d-flex c3 justify-content-around">
@@ -23,9 +27,7 @@
                   <span class="dgt">0</span>
                   <span class="dgt">3</span>
                   <div class="text-center">
-                    <span class="days">
-                      DAYS
-                    </span>
+                    <span class="days"> DAYS </span>
                   </div>
                 </div>
               </div>
@@ -34,9 +36,7 @@
                   <span class="dgt">1</span>
                   <span class="dgt">7</span>
                   <div class="text-center">
-                    <span class="days">
-                      HOURS
-                    </span>
+                    <span class="days"> HOURS </span>
                   </div>
                 </div>
               </div>
@@ -45,9 +45,7 @@
                   <span class="dgt">2</span>
                   <span class="dgt">8</span>
                   <div class="text-center">
-                    <span class="days">
-                      MINUTES
-                    </span>
+                    <span class="days"> MINUTES </span>
                   </div>
                 </div>
               </div>
@@ -56,19 +54,18 @@
                   <span class="dgt">4</span>
                   <span class="dgt">8</span>
                   <div class="text-center">
-                    <span class="days">
-                      SECONDS
-                    </span>
+                    <span class="days"> SECONDS </span>
                   </div>
                 </div>
               </div>
             </div>
             <div class="offer-buttons">
-              <button class="btn btn1 hover-btn" type="submit">Buy Tokens 47% Off</button>
-              <button class="btn btn2 hover-btn2" type="submit">WhitePappers</button>
+              <button class="btn btn1 hover-btn" type="submit">
+                Buy Tokens 47% Off
+              </button>
             </div>
             <div class="d-flex">
-              <img src="assets/images/payment-cards.png" alt="">
+              <img src="assets/images/payment-cards.png" alt="" />
             </div>
           </div>
         </div>
@@ -79,12 +76,13 @@
               <p>Trade tokens is an instant</p>
             </div>
             <div class="token-form">
-              <form>
+              <form (submit)="connectWallet()">
                 <div class="input-group mb-3">
-                  <select class="form-select" aria-label="Default select example">
-                    <option selected>
-
-                    </option>
+                  <select
+                    class="form-select"
+                    aria-label="Default select example"
+                  >
+                    <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
                     <option value="3">Three</option>
@@ -96,11 +94,19 @@
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
                   </ul> -->
-                  <input type="text" class="form-control" aria-label="Text input with dropdown button"
-                    placeholder="1 BNB" (keypress)="keyPressNumbersWithDecimal($event)">
+                  <input
+                    type="text"
+                    class="form-control"
+                    aria-label="Text input with dropdown button"
+                    placeholder="1 BNB"
+                    (keypress)="keyPressNumbersWithDecimal($event)"
+                  />
                 </div>
                 <div class="input-group mb-3">
-                  <select class="form-select two" aria-label="Default select example">
+                  <select
+                    class="form-select two"
+                    aria-label="Default select example"
+                  >
                     <option selected></option>
                     <option value="1">One</option>
                     <option value="2">Two</option>
@@ -112,11 +118,27 @@
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
                   </ul> -->
-                  <input type="text" class="form-control" aria-label="Text input with dropdown button"
-                    placeholder="3469.9 XTC">
+                  <input
+                    type="text"
+                    class="form-control"
+                    aria-label="Text input with dropdown button"
+                    placeholder="3469.9 XTC"
+                  />
                 </div>
                 <div class="text-center connect-wallet">
-                  <button class="wallet hover-btn" type="submit">Connect to Wallet</button>
+                  <button
+                    [disabled]="loading"
+                    class="wallet hover-btn"
+                    type="submit"
+                  >
+                    <span
+                      *ngIf="loading"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    {{ !loading ? connectOrBuyText() : "Connecting" }}
+                  </button>
                 </div>
               </form>
             </div>
@@ -128,36 +150,48 @@
 </section>
 <!-- Banner Section End -->
 
-
 <!-- section-2 -->
 <section class="section-2">
   <div class="container">
     <div class="row">
       <div class="col-lg-7 ms-auto">
         <div class="sec2-box">
-          <a href="#!" class="play-btn"><img src="assets/images/play-icon.png" alt=""></a>
+          <a href="#!" class="play-btn"
+            ><img src="assets/images/play-icon.png" alt=""
+          /></a>
           <div class="play-1"></div>
           <div class="play-2"></div>
 
           <div class="theme-title-cvr">
             <p>decentralised economy</p>
-            <h2>A banking platform that
+            <h2>
+              A banking platform that
               <span>enables developer solutions</span>
             </h2>
           </div>
-          <p>Spend real fights effective anything extra by leading. Mouthwatering leading how real formula
-            also locked-in have can mountain thought. Jumbo plus shine sale.</p>
+          <p>
+            Spend real fights effective anything extra by leading. Mouthwatering
+            leading how real formula also locked-in have can mountain thought.
+            Jumbo plus shine sale.
+          </p>
           <ul class="checked-mark">
             <li>
-              <p><b>Modular structure</b> enabling easy implementation for different softwares</p>
+              <p>
+                <b>Modular structure</b> enabling easy implementation for
+                different softwares
+              </p>
             </li>
             <li>
-              <p><b>Advanced payment</b> and processing technologies, fine-tuned
-                from more than 3 years of development testing</p>
+              <p>
+                <b>Advanced payment</b> and processing technologies, fine-tuned
+                from more than 3 years of development testing
+              </p>
             </li>
             <li>
-              <p><b>Unified AppStore</b> for retail cryptocurrency solutions
-                with a Crypterium products audience</p>
+              <p>
+                <b>Unified AppStore</b> for retail cryptocurrency solutions with
+                a Crypterium products audience
+              </p>
             </li>
           </ul>
         </div>
@@ -174,31 +208,41 @@
         <div class="sec3-left">
           <div class="theme-title-cvr">
             <p class="light-text">About ICO</p>
-            <h2>Cryptoland Theme
+            <h2>
+              Cryptoland Theme
               <span>is the best for your ICO</span>
             </h2>
           </div>
-          <p class="light-text">Spend real fights effective anything extra by leading. Mouthwatering
-            leading how real formula also locked-in have can mountain thought. Jumbo plus shine sale.
+          <p class="light-text">
+            Spend real fights effective anything extra by leading. Mouthwatering
+            leading how real formula also locked-in have can mountain thought.
+            Jumbo plus shine sale.
           </p>
           <ul class="light-text">
             <li>
-              <p><b>Modular structure</b> enabling easy implementation for different softwares</p>
+              <p>
+                <b>Modular structure</b> enabling easy implementation for
+                different softwares
+              </p>
             </li>
             <li>
-              <p><b>Advanced payment</b> and processing technologies, fine-tuned
-                from more than 3 years of development testing</p>
+              <p>
+                <b>Advanced payment</b> and processing technologies, fine-tuned
+                from more than 3 years of development testing
+              </p>
             </li>
             <li>
-              <p><b>Unified AppStore</b> for retail cryptocurrency solutions
-                with a Crypterium products audience</p>
+              <p>
+                <b>Unified AppStore</b> for retail cryptocurrency solutions with
+                a Crypterium products audience
+              </p>
             </li>
           </ul>
         </div>
       </div>
       <div class="col-lg-6">
         <div class="sec3-right text-center">
-          <img src="assets/images/sec3-img.png" alt="">
+          <img src="assets/images/sec3-img.png" alt="" />
         </div>
       </div>
     </div>
@@ -208,7 +252,7 @@
 <!-- section-4 -->
 <section class="section-4" id="service">
   <div class="earth-back-image">
-    <img src="assets/images/earth-back.png" alt="">
+    <img src="assets/images/earth-back.png" alt="" />
   </div>
   <div class="container">
     <div class="theme-title-cvr text-center mb-5">
@@ -219,10 +263,17 @@
       <div class="w-20">
         <a href="#">
           <div class="sec4-card pink">
-            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59px"
-              height="65px">
-              <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
-                d="M56.893,31.448 L56.893,29.350 L59.000,29.350 L59.000,31.448 L56.893,31.448 ZM56.893,33.545 L54.786,33.545 L54.786,31.448 L56.893,31.448 L56.893,33.545 ZM52.678,31.448 L52.678,29.350 L54.786,29.350 L54.786,31.448 L52.678,31.448 ZM54.786,27.253 L56.893,27.253 L56.893,29.350 L54.786,29.350 L54.786,27.253 ZM34.768,10.493 L34.768,14.672 L24.232,14.672 L24.232,10.493 C15.041,10.706 2.475,13.566 2.344,13.598 L2.107,13.624 L-0.000,13.624 L-0.000,11.056 L0.354,10.744 C0.744,10.399 9.870,2.508 24.232,2.128 L24.232,-0.005 L34.768,-0.005 L34.768,2.128 C49.130,2.508 58.256,10.399 58.646,10.744 L59.000,11.056 L59.000,13.624 L56.656,13.597 C56.525,13.566 43.959,10.706 34.768,10.493 ZM24.232,4.218 C13.688,4.516 6.019,9.176 3.077,11.287 C6.498,10.554 16.410,8.570 24.232,8.400 L24.232,4.218 ZM32.661,2.092 L26.339,2.092 L26.339,12.576 L32.661,12.576 L32.661,2.092 ZM34.768,4.218 L34.768,8.400 C42.584,8.570 52.488,10.552 55.916,11.286 C52.964,9.172 45.281,4.516 34.768,4.218 ZM2.107,44.027 L-0.000,44.027 L-0.000,41.931 L2.107,41.931 L2.107,44.027 ZM2.107,39.834 L4.214,39.834 L4.214,41.931 L2.107,41.931 L2.107,39.834 ZM6.321,41.931 L6.321,44.027 L4.214,44.027 L4.214,41.931 L6.321,41.931 ZM4.214,46.125 L2.107,46.125 L2.107,44.027 L4.214,44.027 L4.214,46.125 ZM9.482,35.640 L9.482,33.545 L7.375,33.545 L7.375,23.061 L9.482,23.061 L9.482,20.963 L11.589,20.963 L11.589,23.061 L13.696,23.061 L13.696,20.963 L15.803,20.963 L15.803,23.252 C17.027,23.687 17.911,24.840 17.911,26.206 C17.911,27.011 17.605,27.745 17.103,28.302 C17.605,28.859 17.911,29.594 17.911,30.398 C17.911,31.764 17.027,32.916 15.803,33.351 L15.803,35.640 L13.696,35.640 L13.696,33.545 L11.589,33.545 L11.589,35.640 L9.482,35.640 ZM14.750,25.157 L9.482,25.157 L9.482,27.253 L14.750,27.253 C15.331,27.253 15.803,26.784 15.803,26.206 C15.803,25.626 15.331,25.157 14.750,25.157 ZM14.750,31.448 C15.331,31.448 15.803,30.977 15.803,30.398 C15.803,29.820 15.331,29.350 14.750,29.350 L9.482,29.350 L9.482,31.448 L14.750,31.448 ZM3.671,35.599 C1.984,33.546 1.053,30.955 1.053,28.302 C1.053,21.942 6.253,16.769 12.643,16.769 C15.309,16.769 17.914,17.695 19.977,19.376 L18.641,20.997 C16.955,19.623 14.824,18.866 12.643,18.866 C7.414,18.866 3.160,23.098 3.160,28.302 C3.160,30.472 3.921,32.594 5.301,34.270 L3.671,35.599 ZM6.645,35.607 C8.330,36.981 10.462,37.736 12.643,37.736 C17.871,37.736 22.125,33.505 22.125,28.302 C22.125,26.132 21.364,24.011 19.984,22.334 L21.614,21.004 C23.302,23.056 24.232,25.648 24.232,28.302 C24.232,34.659 19.033,39.834 12.643,39.834 C9.976,39.834 7.372,38.909 5.309,37.228 L6.645,35.607 ZM17.911,48.221 L15.803,48.221 L15.803,46.125 L17.911,46.125 L17.911,48.221 ZM17.911,44.027 L20.018,44.027 L20.018,46.125 L17.911,46.125 L17.911,44.027 ZM22.125,46.125 L22.125,48.221 L20.018,48.221 L20.018,46.125 L22.125,46.125 ZM20.018,50.317 L17.911,50.317 L17.911,48.221 L20.018,48.221 L20.018,50.317 ZM28.446,18.866 L30.553,18.866 L30.553,16.769 L32.661,16.769 L32.661,64.996 L26.339,64.996 L26.339,16.769 L28.446,16.769 L28.446,18.866 ZM28.446,62.898 L30.553,62.898 L30.553,20.963 L28.446,20.963 L28.446,62.898 ZM41.089,23.061 L41.089,25.157 L38.982,25.157 L38.982,23.061 L41.089,23.061 ZM43.196,25.157 L43.196,27.253 L41.089,27.253 L41.089,25.157 L43.196,25.157 ZM41.089,29.350 L38.982,29.350 L38.982,27.253 L41.089,27.253 L41.089,29.350 ZM36.875,27.253 L36.875,25.157 L38.982,25.157 L38.982,27.253 L36.875,27.253 ZM47.411,14.672 L47.411,16.769 L45.303,16.769 L45.303,14.672 L47.411,14.672 ZM49.518,16.769 L49.518,18.866 L47.411,18.866 L47.411,16.769 L49.518,16.769 ZM47.411,20.963 L45.303,20.963 L45.303,18.866 L47.411,18.866 L47.411,20.963 ZM43.196,18.866 L43.196,16.769 L45.303,16.769 L45.303,18.866 L43.196,18.866 ZM46.357,34.592 C49.023,34.592 51.628,35.518 53.691,37.197 L52.355,38.819 C50.669,37.447 48.538,36.689 46.357,36.689 C41.128,36.689 36.875,40.922 36.875,46.125 C36.875,48.295 37.635,50.415 39.016,52.094 L37.386,53.422 C35.698,51.369 34.768,48.777 34.768,46.125 C34.768,39.765 39.967,34.592 46.357,34.592 ZM49.518,51.174 L49.518,53.463 L47.411,53.463 L47.411,51.366 L45.303,51.366 L45.303,53.463 L43.196,53.463 L43.196,51.366 L41.089,51.366 L41.089,40.882 L43.196,40.882 L43.196,38.785 L45.303,38.785 L45.303,40.882 L47.411,40.882 L47.411,38.785 L49.518,38.785 L49.518,41.076 C50.741,41.508 51.625,42.663 51.625,44.027 C51.625,44.834 51.319,45.568 50.818,46.125 C51.319,46.680 51.625,47.417 51.625,48.221 C51.625,49.585 50.741,50.740 49.518,51.174 ZM48.464,42.979 L43.196,42.979 L43.196,45.076 L48.464,45.076 C49.046,45.076 49.518,44.607 49.518,44.027 C49.518,43.449 49.046,42.979 48.464,42.979 ZM48.464,47.172 L43.196,47.172 L43.196,49.269 L48.464,49.269 C49.046,49.269 49.518,48.801 49.518,48.221 C49.518,47.641 49.046,47.172 48.464,47.172 ZM46.357,55.559 C51.586,55.559 55.839,51.328 55.839,46.125 C55.839,43.956 55.078,41.834 53.698,40.156 L55.328,38.826 C57.016,40.879 57.946,43.471 57.946,46.125 C57.946,52.483 52.747,57.656 46.357,57.656 C43.690,57.656 41.086,56.730 39.023,55.052 L40.359,53.431 C42.045,54.803 44.176,55.559 46.357,55.559 ZM53.732,62.898 L51.625,62.898 L51.625,60.800 L53.732,60.800 L53.732,62.898 ZM53.732,58.705 L55.839,58.705 L55.839,60.800 L53.732,60.800 L53.732,58.705 ZM57.946,60.800 L57.946,62.898 L55.839,62.898 L55.839,60.800 L57.946,60.800 ZM55.839,64.996 L53.732,64.996 L53.732,62.898 L55.839,62.898 L55.839,64.996 Z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              width="59px"
+              height="65px"
+            >
+              <path
+                fill-rule="evenodd"
+                fill="rgb(255, 255, 255)"
+                d="M56.893,31.448 L56.893,29.350 L59.000,29.350 L59.000,31.448 L56.893,31.448 ZM56.893,33.545 L54.786,33.545 L54.786,31.448 L56.893,31.448 L56.893,33.545 ZM52.678,31.448 L52.678,29.350 L54.786,29.350 L54.786,31.448 L52.678,31.448 ZM54.786,27.253 L56.893,27.253 L56.893,29.350 L54.786,29.350 L54.786,27.253 ZM34.768,10.493 L34.768,14.672 L24.232,14.672 L24.232,10.493 C15.041,10.706 2.475,13.566 2.344,13.598 L2.107,13.624 L-0.000,13.624 L-0.000,11.056 L0.354,10.744 C0.744,10.399 9.870,2.508 24.232,2.128 L24.232,-0.005 L34.768,-0.005 L34.768,2.128 C49.130,2.508 58.256,10.399 58.646,10.744 L59.000,11.056 L59.000,13.624 L56.656,13.597 C56.525,13.566 43.959,10.706 34.768,10.493 ZM24.232,4.218 C13.688,4.516 6.019,9.176 3.077,11.287 C6.498,10.554 16.410,8.570 24.232,8.400 L24.232,4.218 ZM32.661,2.092 L26.339,2.092 L26.339,12.576 L32.661,12.576 L32.661,2.092 ZM34.768,4.218 L34.768,8.400 C42.584,8.570 52.488,10.552 55.916,11.286 C52.964,9.172 45.281,4.516 34.768,4.218 ZM2.107,44.027 L-0.000,44.027 L-0.000,41.931 L2.107,41.931 L2.107,44.027 ZM2.107,39.834 L4.214,39.834 L4.214,41.931 L2.107,41.931 L2.107,39.834 ZM6.321,41.931 L6.321,44.027 L4.214,44.027 L4.214,41.931 L6.321,41.931 ZM4.214,46.125 L2.107,46.125 L2.107,44.027 L4.214,44.027 L4.214,46.125 ZM9.482,35.640 L9.482,33.545 L7.375,33.545 L7.375,23.061 L9.482,23.061 L9.482,20.963 L11.589,20.963 L11.589,23.061 L13.696,23.061 L13.696,20.963 L15.803,20.963 L15.803,23.252 C17.027,23.687 17.911,24.840 17.911,26.206 C17.911,27.011 17.605,27.745 17.103,28.302 C17.605,28.859 17.911,29.594 17.911,30.398 C17.911,31.764 17.027,32.916 15.803,33.351 L15.803,35.640 L13.696,35.640 L13.696,33.545 L11.589,33.545 L11.589,35.640 L9.482,35.640 ZM14.750,25.157 L9.482,25.157 L9.482,27.253 L14.750,27.253 C15.331,27.253 15.803,26.784 15.803,26.206 C15.803,25.626 15.331,25.157 14.750,25.157 ZM14.750,31.448 C15.331,31.448 15.803,30.977 15.803,30.398 C15.803,29.820 15.331,29.350 14.750,29.350 L9.482,29.350 L9.482,31.448 L14.750,31.448 ZM3.671,35.599 C1.984,33.546 1.053,30.955 1.053,28.302 C1.053,21.942 6.253,16.769 12.643,16.769 C15.309,16.769 17.914,17.695 19.977,19.376 L18.641,20.997 C16.955,19.623 14.824,18.866 12.643,18.866 C7.414,18.866 3.160,23.098 3.160,28.302 C3.160,30.472 3.921,32.594 5.301,34.270 L3.671,35.599 ZM6.645,35.607 C8.330,36.981 10.462,37.736 12.643,37.736 C17.871,37.736 22.125,33.505 22.125,28.302 C22.125,26.132 21.364,24.011 19.984,22.334 L21.614,21.004 C23.302,23.056 24.232,25.648 24.232,28.302 C24.232,34.659 19.033,39.834 12.643,39.834 C9.976,39.834 7.372,38.909 5.309,37.228 L6.645,35.607 ZM17.911,48.221 L15.803,48.221 L15.803,46.125 L17.911,46.125 L17.911,48.221 ZM17.911,44.027 L20.018,44.027 L20.018,46.125 L17.911,46.125 L17.911,44.027 ZM22.125,46.125 L22.125,48.221 L20.018,48.221 L20.018,46.125 L22.125,46.125 ZM20.018,50.317 L17.911,50.317 L17.911,48.221 L20.018,48.221 L20.018,50.317 ZM28.446,18.866 L30.553,18.866 L30.553,16.769 L32.661,16.769 L32.661,64.996 L26.339,64.996 L26.339,16.769 L28.446,16.769 L28.446,18.866 ZM28.446,62.898 L30.553,62.898 L30.553,20.963 L28.446,20.963 L28.446,62.898 ZM41.089,23.061 L41.089,25.157 L38.982,25.157 L38.982,23.061 L41.089,23.061 ZM43.196,25.157 L43.196,27.253 L41.089,27.253 L41.089,25.157 L43.196,25.157 ZM41.089,29.350 L38.982,29.350 L38.982,27.253 L41.089,27.253 L41.089,29.350 ZM36.875,27.253 L36.875,25.157 L38.982,25.157 L38.982,27.253 L36.875,27.253 ZM47.411,14.672 L47.411,16.769 L45.303,16.769 L45.303,14.672 L47.411,14.672 ZM49.518,16.769 L49.518,18.866 L47.411,18.866 L47.411,16.769 L49.518,16.769 ZM47.411,20.963 L45.303,20.963 L45.303,18.866 L47.411,18.866 L47.411,20.963 ZM43.196,18.866 L43.196,16.769 L45.303,16.769 L45.303,18.866 L43.196,18.866 ZM46.357,34.592 C49.023,34.592 51.628,35.518 53.691,37.197 L52.355,38.819 C50.669,37.447 48.538,36.689 46.357,36.689 C41.128,36.689 36.875,40.922 36.875,46.125 C36.875,48.295 37.635,50.415 39.016,52.094 L37.386,53.422 C35.698,51.369 34.768,48.777 34.768,46.125 C34.768,39.765 39.967,34.592 46.357,34.592 ZM49.518,51.174 L49.518,53.463 L47.411,53.463 L47.411,51.366 L45.303,51.366 L45.303,53.463 L43.196,53.463 L43.196,51.366 L41.089,51.366 L41.089,40.882 L43.196,40.882 L43.196,38.785 L45.303,38.785 L45.303,40.882 L47.411,40.882 L47.411,38.785 L49.518,38.785 L49.518,41.076 C50.741,41.508 51.625,42.663 51.625,44.027 C51.625,44.834 51.319,45.568 50.818,46.125 C51.319,46.680 51.625,47.417 51.625,48.221 C51.625,49.585 50.741,50.740 49.518,51.174 ZM48.464,42.979 L43.196,42.979 L43.196,45.076 L48.464,45.076 C49.046,45.076 49.518,44.607 49.518,44.027 C49.518,43.449 49.046,42.979 48.464,42.979 ZM48.464,47.172 L43.196,47.172 L43.196,49.269 L48.464,49.269 C49.046,49.269 49.518,48.801 49.518,48.221 C49.518,47.641 49.046,47.172 48.464,47.172 ZM46.357,55.559 C51.586,55.559 55.839,51.328 55.839,46.125 C55.839,43.956 55.078,41.834 53.698,40.156 L55.328,38.826 C57.016,40.879 57.946,43.471 57.946,46.125 C57.946,52.483 52.747,57.656 46.357,57.656 C43.690,57.656 41.086,56.730 39.023,55.052 L40.359,53.431 C42.045,54.803 44.176,55.559 46.357,55.559 ZM53.732,62.898 L51.625,62.898 L51.625,60.800 L53.732,60.800 L53.732,62.898 ZM53.732,58.705 L55.839,58.705 L55.839,60.800 L53.732,60.800 L53.732,58.705 ZM57.946,60.800 L57.946,62.898 L55.839,62.898 L55.839,60.800 L57.946,60.800 ZM55.839,64.996 L53.732,64.996 L53.732,62.898 L55.839,62.898 L55.839,64.996 Z"
+              />
             </svg>
             <p>Mining Service</p>
           </div>
@@ -231,7 +282,7 @@
       <div class="w-20">
         <a href="#">
           <div class="sec4-card">
-            <img src="assets/images/i1.png" alt="">
+            <img src="assets/images/i1.png" alt="" />
             <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 width="59px" height="65px">
                 <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
@@ -244,14 +295,14 @@
       <div class="w-20">
         <a href="#">
           <div class="sec4-card trans">
-            <img src="assets/images/Logo.png" alt="">
+            <img src="assets/images/Logo.png" alt="" />
           </div>
         </a>
       </div>
       <div class="w-20">
         <a href="#">
           <div class="sec4-card green">
-            <img src="assets/images/i2.png" alt="">
+            <img src="assets/images/i2.png" alt="" />
             <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 width="59px" height="65px">
                 <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
@@ -265,7 +316,7 @@
       <div class="w-20">
         <a href="#">
           <div class="sec4-card blue">
-            <img src="assets/images/i3.png" alt="">
+            <img src="assets/images/i3.png" alt="" />
             <!-- <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 width="59px" height="65px">
                 <path fill-rule="evenodd" fill="rgb(255, 255, 255)"
