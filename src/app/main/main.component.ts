@@ -1,23 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 import { SnackbarService } from '../shared/snackbar.service';
-import { ContractService } from './contract.service';
 import mainAbi from './erc20.json';
-import presaleAbi from './presale.json';
 import minimalAbi from './minimalAbi.json';
+import presaleAbi from './presale.json';
 
-const tokenAddresses = [
-  {
-    address: '0xF967692E2b7b1817f668300E2805cfCEd8A13A90',
-    token: 'A',
-    balance: 0,
-  },
-  {
-    address: '0xdfEb02ed25fCf3466A7050B87Ce518CB868E0dBA',
-    token: 'B',
-    balance: 0,
-  },
+/*
   {
     address: '0x353fe7a233a6bF60fC3c4F3645BA467e3f33e3b4',
     token: 'HUA',
@@ -28,9 +23,16 @@ const tokenAddresses = [
     token: 'HAR',
     balance: 0,
   },
-];
+*/
 
 const presaleAddress = '0x11e9a4554390B5304C6b96333195ee4d3B030Ed1';
+
+type Token = {
+  address: string;
+  token: string;
+  balance: string;
+  parityRate: string;
+};
 
 @Component({
   selector: 'app-main',
@@ -38,16 +40,45 @@ const presaleAddress = '0x11e9a4554390B5304C6b96333195ee4d3B030Ed1';
   styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit {
+  tokenAddresses = [
+    {
+      address: '',
+      token: 'BNB',
+      balance: '0',
+      parityRate: '0',
+    },
+    {
+      address: '0xF967692E2b7b1817f668300E2805cfCEd8A13A90',
+      token: 'A',
+      balance: '0',
+      parityRate: '0',
+    },
+    {
+      address: '0xdfEb02ed25fCf3466A7050B87Ce518CB868E0dBA',
+      token: 'B',
+      balance: '0',
+      parityRate: '0',
+    },
+  ] as Token[];
+
   loading = false;
   metamaskConnected = false;
   account!: string;
   web3!: Web3;
-  bnbBalance!: string;
+
+  tokenBuyForm!: FormGroup;
 
   constructor(
-    private service: ContractService,
-    private snackbar: SnackbarService
-  ) {}
+    private readonly snackbar: SnackbarService,
+    private readonly fb: FormBuilder
+  ) {
+    this.tokenBuyForm = this.fb.group({
+      fromTokenSelect: ['BNB'],
+      fromTokenInput: [null],
+      toTokenSelect: [{ value: null, disabled: true }],
+      toTokenInput: [null],
+    });
+  }
 
   ngOnInit(): void {
     this.connectWallet();
@@ -57,7 +88,84 @@ export class MainComponent implements OnInit {
     return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
   }
 
-  connectWallet = async () => {
+  changeSelectFromToken(tokenName: string): void {
+    const token = this.getSavedToken(tokenName);
+    this.fromTokenInputControl?.setValue(token?.balance);
+    this.toTokenInputControl?.setValue(
+      this.calculateParityFromTo(token?.parityRate, token?.balance)
+    );
+  }
+
+  fromInputChange(value: string): void {
+    const token = this.getSavedToken(this.fromTokenSelectControl?.value);
+    this.toTokenInputControl?.setValue(
+      this.calculateParityFromTo(token?.parityRate, value)
+    );
+  }
+
+  toInputChange(value: string): void {
+    const token = this.getSavedToken(this.fromTokenSelectControl?.value);
+    this.fromTokenInputControl?.setValue(
+      this.calculateParityToFrom(token?.parityRate, value)
+    );
+  }
+
+  keyPressNumbersWithDecimal(event: any) {
+    var charCode = event.which ? event.which : event.keyCode;
+    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  connectWalletOrBuy(): void {
+    if (this.metamaskConnected) {
+      this.buyToken();
+    }
+
+    if (!this.metamaskConnected) {
+      this.connectWallet();
+    }
+  }
+
+  get fromTokenSelectControl(): AbstractControl | null {
+    return this.tokenBuyForm.get('fromTokenSelect');
+  }
+
+  get fromTokenInputControl(): AbstractControl | null {
+    return this.tokenBuyForm.get('fromTokenInput');
+  }
+
+  get toTokenInputControl(): AbstractControl | null {
+    return this.tokenBuyForm.get('toTokenInput');
+  }
+
+  private calculateParityToFrom(
+    parityRate: string | undefined,
+    value: string | undefined
+  ): number {
+    if (!parityRate || !value) {
+      return 0;
+    }
+    return Number.parseFloat(value) * Number.parseFloat(parityRate);
+  }
+
+  private calculateParityFromTo(
+    parityRate: string | undefined,
+    value: string | undefined
+  ): number {
+    if (!parityRate || !value) {
+      return 0;
+    }
+    return Number.parseFloat(value) / Number.parseFloat(parityRate);
+  }
+
+  private getSavedToken(tokenName: string): Token | undefined {
+    return this.tokenAddresses.find((token) => token.token === tokenName);
+  }
+
+  private connectWallet = async () => {
     this.loading = true;
     const provider = await detectEthereumProvider({
       mustBeMetaMask: true,
@@ -72,15 +180,28 @@ export class MainComponent implements OnInit {
         }
         this.account = accounts[0];
         this.web3 = new Web3(provider as any);
-        this.web3.eth.getBalance(this.account).then((balance) => {
-          console.log(balance);
-          const fromWei = this.web3.utils.fromWei(balance);
-          console.log(fromWei);
-          this.bnbBalance = fromWei;
-        });
+        const bnbBalanceResponse = await this.web3.eth.getBalance(this.account);
+        const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
         console.log(accounts);
 
-        tokenAddresses.forEach(async (token) => {
+        this.tokenAddresses.forEach(async (token) => {
+          const presaleContract = new this.web3.eth.Contract(
+            presaleAbi as any,
+            presaleAddress
+          );
+
+          if (token.token === 'BNB') {
+            token.balance = bnbBalance;
+            const rateOfNativeCurrencyResponse = await presaleContract.methods
+              .rate()
+              .call();
+            token.parityRate = this.web3.utils.fromWei(
+              rateOfNativeCurrencyResponse
+            );
+            this.changeSelectFromToken(token.token);
+            return;
+          }
+
           const contract = new this.web3.eth.Contract(
             minimalAbi as any,
             token.address
@@ -89,13 +210,20 @@ export class MainComponent implements OnInit {
             .balanceOf(this.account)
             .call();
 
-          console.log(
-            'token: ' + token.token,
-            this.web3.utils.fromWei(tokenBalance)
-          );
+          token.balance = this.web3.utils.fromWei(tokenBalance);
+
+          const rateOfToken = await presaleContract.methods
+            .tokenPrices(token.address)
+            .call();
+
+          token.parityRate = this.web3.utils.fromWei(rateOfToken);
         });
+        console.log(this.tokenAddresses);
       } catch (e) {
-        this.snackbar.error('Metamask grant failed!', 'OK');
+        this.snackbar.error(
+          'Metamask grant failed! Please login in MetaMask',
+          'OK'
+        );
         console.error(e);
       }
     } else {
@@ -107,150 +235,155 @@ export class MainComponent implements OnInit {
     this.loading = false;
   };
 
-  buyToken = async () => {
-    const presaleContract = new this.web3.eth.Contract(
-      presaleAbi as any,
-      presaleAddress
-    );
+  private buyToken = async () => {
+    this.loading = true;
+    try {
+      const presaleContract = new this.web3.eth.Contract(
+        presaleAbi as any,
+        presaleAddress
+      ); // TODO DUPL
 
-    const aMainContract = new this.web3.eth.Contract(
-      mainAbi as any,
-      tokenAddresses[0].address
-    );
+      /*const aMainContract = new this.web3.eth.Contract(
+        mainAbi as any,
+        this.tokenAddresses[0].address
+      );
 
-    const bMainContract = new this.web3.eth.Contract(
-      mainAbi as any,
-      tokenAddresses[1].address
-    );
+      const bMainContract = new this.web3.eth.Contract(
+        mainAbi as any,
+        this.tokenAddresses[1].address
+      );*/
 
-    const rateOfNativeCur = await presaleContract.methods.rate().call();
+      const selectedToken = this.getSavedToken(
+        this.fromTokenSelectControl?.value
+      );
 
-    console.log('rateOfNativeCur', rateOfNativeCur);
-    console.log('rateOfNativeCur', this.web3.utils.fromWei(rateOfNativeCur));
+      const tokenContract = new this.web3.eth.Contract(
+        mainAbi as any,
+        selectedToken?.address
+      );
 
-    const rateOfA = await presaleContract.methods
-      .tokenPrices(tokenAddresses[0].address) //'0xF967692E2b7b1817f668300E2805cfCEd8A13A90') //tokenAddresses[0].address)
-      .call();
-    const rateOfB = await presaleContract.methods
-      .tokenPrices(tokenAddresses[1].address)
-      .call();
-
-    console.log('rateOfA', rateOfA);
-    console.log('rateOfA', this.web3.utils.fromWei(rateOfA));
-
-    console.log('rateOfB', rateOfB);
-    console.log('rateOfB', this.web3.utils.fromWei(rateOfB));
-
-    //String(10) + '0'.repeat(18)
-    let amount = this.web3.utils.toWei('1000000', 'mwei');
-    /*let data = presaleContract.methods
-      .buyToken(tokenAddresses[0].address, amount)
-      .encodeABI();
-    let gas = await this.web3.eth.estimateGas({
-      value,
-      data,
-      from: this.account,
-      to: presaleAddress,
-    });*/
-
-    /*const tokenBuyTx = await presaleContract.methods
-      .buyToken(tokenAddresses[0].address, amount)
-      .send({ from: this.account, gas: '100000' }); //, gas: '20000000000'*/
-    //String(1000) + '0'.repeat(18)
-
-    //const amountToSpend = 10;
-
-    const approveSpend = await bMainContract.methods
-      .approve(presaleAddress, '1000000' + '0'.repeat(18))
-      .send({ from: this.account });
-
-    console.log('spend aapproved ', approveSpend);
-
-    const tokenBuy = await presaleContract.methods
-      .buyToken(tokenAddresses[1].address, '101' + '0'.repeat(18))
-      .send({ from: this.account });
-
-    console.log('buyyy', tokenBuy);
-
-    //call({ from: this.account, gas: '20000000000' }); //tokenAddresses[0].address)
-
-    //await tokenBuyTx.wait(1);
-    //console.log('buyyyyy', tokenBuyTx);
-    /*const testNet = new Web3(
-      'https://data-seed-prebsc-1-s1.binance.org:8545'
-    );*/
-
-    /*const contract = new this.web3.eth.Contract(
-      [
-        {
-          constant: true,
-          inputs: [
-            {
-              name: '_owner',
-              type: 'address',
-            },
-          ],
-          name: 'balanceOf',
-          outputs: [
-            {
-              name: 'balance',
-              type: 'uint256',
-            },
-          ],
-          payable: false,
-          type: 'function',
-        },
-      ],
-      tokenAddresses[3].address,
-      {
-        from: this.account,
+      // TODO Ask how much should?
+      if (selectedToken?.token !== 'BNB') {
+        const approveSpend = await tokenContract.methods
+          .approve(presaleAddress, '1000000' + '0'.repeat(18))
+          .send({ from: this.account });
+        console.log('spend approved ', approveSpend);
       }
-    );*/
 
-    //const val = await contract.methods.balanceOf(this.account).call();
-    //console.log('BALLLL', this.web3.utils.fromWei(val));
+      if (selectedToken?.token === 'BNB') {
+        const tokenBuy = await presaleContract.methods
+          .buyToken(this.account, '0')
+          .send({
+            from: this.account,
+            /*this.web3.utils.toBN(
+              this.fromTokenInputControl?.value + '0'.repeat(18)
+            ),*/
+            value: this.web3.utils.toWei(
+              this.fromTokenInputControl?.value.toString(),
+              'ether'
+            ),
+          });
 
-    tokenAddresses.forEach(async (token) => {
-      const contract = new this.web3.eth.Contract(
-        [
-          {
-            constant: true,
-            inputs: [
-              {
-                name: '_owner',
-                type: 'address',
-              },
-            ],
-            name: 'balanceOf',
-            outputs: [
-              {
-                name: 'balance',
-                type: 'uint256',
-              },
-            ],
-            payable: false,
-            type: 'function',
-          },
-        ],
-        token.address
-      );
-      const tokenBalance = await contract.methods
-        .balanceOf(this.account)
-        .call();
+        console.log('buy', tokenBuy);
+      } else {
+        const tokenBuy = await presaleContract.methods
+          .buyToken(
+            selectedToken?.address,
+            this.fromTokenInputControl?.value + '0'.repeat(18)
+          )
+          .send({ from: this.account });
 
-      console.log(
-        'token: ' + token.token,
-        this.web3.utils.fromWei(tokenBalance)
-      );
-    });
+        console.log('buy', tokenBuy);
+      }
+
+      this.snackbar.success('Presale was successful', '');
+
+      this.tokenAddresses.forEach(async (token) => {
+        if (!token.address) {
+          const bnbBalanceResponse = await this.web3.eth.getBalance(
+            this.account
+          );
+          const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
+          token.balance = bnbBalance;
+          return;
+        }
+        const contract = new this.web3.eth.Contract(
+          minimalAbi as any,
+          token.address
+        );
+        const tokenBalance = await contract.methods
+          .balanceOf(this.account)
+          .call();
+
+        const balance = this.web3.utils.fromWei(tokenBalance);
+        token.balance = balance;
+      });
+      console.log(this.tokenAddresses);
+    } catch (error: any) {
+      console.log(error);
+      this.snackbar.error('Signing failed, please try again!', 'OK');
+    } finally {
+      this.loading = false;
+    }
   };
 
-  keyPressNumbersWithDecimal(event: any) {
-    var charCode = event.which ? event.which : event.keyCode;
-    if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-      event.preventDefault();
-      return false;
+  private isString(s: unknown) {
+    return typeof s === 'string' || s instanceof String;
+  }
+
+  private toBaseUnit(value: string, decimals: number) {
+    if (!this.isString(value)) {
+      throw new Error(
+        'Pass strings to prevent floating point precision issues.'
+      );
     }
-    return true;
+    const ten = this.web3.utils.toBN(10);
+    const base = ten.pow(this.web3.utils.toBN(decimals));
+
+    // Is it negative?
+    let negative = value.substring(0, 1) === '-';
+    if (negative) {
+      value = value.substring(1);
+    }
+
+    if (value === '.') {
+      throw new Error(
+        `Invalid value ${value} cannot be converted to` +
+          ` base unit with ${decimals} decimals.`
+      );
+    }
+
+    // Split it into a whole and fractional part
+    let comps = value.split('.');
+    if (comps.length > 2) {
+      throw new Error('Too many decimal points');
+    }
+
+    let whole = comps[0],
+      fraction = comps[1];
+
+    if (!whole) {
+      whole = '0';
+    }
+    if (!fraction) {
+      fraction = '0';
+    }
+    if (fraction.length > decimals) {
+      throw new Error('Too many decimal places');
+    }
+
+    while (fraction.length < decimals) {
+      fraction += '0';
+    }
+
+    const wholeBN = this.web3.utils.toBN(whole);
+    const fractionBN = this.web3.utils.toBN(fraction);
+    let wei = wholeBN.mul(base).add(fractionBN);
+
+    if (negative) {
+      wei = wei.neg();
+    }
+
+    return this.web3.utils.toBN(wei.toString(10));
   }
 }

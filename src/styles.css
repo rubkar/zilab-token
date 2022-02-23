@@ -301,6 +301,7 @@ section.banner .row {
   margin-bottom: 25px !important;
 }
 
+/* TODO  should be read dynamically somehow */
 .banner-main .tokens-cover select.form-select {
   width: 15%;
   -webkit-appearance: auto;

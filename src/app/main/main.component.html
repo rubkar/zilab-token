@@ -76,16 +76,27 @@
               <p>Trade tokens is an instant</p>
             </div>
             <div class="token-form">
-              <form (submit)="connectWallet()">
+              <form
+                [formGroup]="tokenBuyForm"
+                (ngSubmit)="connectWalletOrBuy()"
+                (keydown.enter)="$event.preventDefault()"
+              >
                 <div class="input-group mb-3">
                   <select
                     class="form-select"
                     aria-label="Default select example"
+                    formControlName="fromTokenSelect"
+                    [disabled]="!metamaskConnected || loading"
+                    (keypress)="keyPressNumbersWithDecimal($event)"
+                    (change)="changeSelectFromToken(fromSelect.value)"
+                    #fromSelect
                   >
-                    <option selected></option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option
+                      *ngFor="let token of tokenAddresses"
+                      [value]="token.token"
+                    >
+                      {{ token.token }}
+                    </option>
                   </select>
                   <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                       data-bs-toggle="dropdown" aria-expanded="false"><img
@@ -93,36 +104,37 @@
                   <ul class="dropdown-menu">
                       <li><a class="dropdown-item" href="#">Action</a></li>
                       <li><a class="dropdown-item" href="#">Another action</a></li>
-                  </ul> -->
+                  </ul> 
+                (keypress)="keyPressNumbersWithDecimal($event)"
+                -->
                   <input
                     type="text"
                     class="form-control"
                     aria-label="Text input with dropdown button"
+                    formControlName="fromTokenInput"
                     placeholder="1 BNB"
-                    (keypress)="keyPressNumbersWithDecimal($event)"
+                    [disabled]="!metamaskConnected || loading"
+                    (input)="fromInputChange(fromInput.value)"
+                    #fromInput
                   />
                 </div>
                 <div class="input-group mb-3">
                   <select
                     class="form-select two"
                     aria-label="Default select example"
+                    formControlName="toTokenSelect"
                   >
                     <option selected></option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
                   </select>
-                  <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                      data-bs-toggle="dropdown" aria-expanded="false"><span>X</span></button>
-                  <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                  </ul> -->
                   <input
                     type="text"
                     class="form-control"
                     aria-label="Text input with dropdown button"
+                    [disabled]="!metamaskConnected || loading"
+                    formControlName="toTokenInput"
                     placeholder="3469.9 XTC"
+                    (input)="toInputChange(toInput.value)"
+                    #toInput
                   />
                 </div>
                 <div class="text-center connect-wallet">
@@ -137,7 +149,7 @@
                       role="status"
                       aria-hidden="true"
                     ></span>
-                    {{ !loading ? connectOrBuyText() : "Connecting" }}
+                    {{ loading ? "Processing" : connectOrBuyText() }}
                   </button>
                 </div>
               </form>
