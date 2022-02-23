@@ -70,6 +70,9 @@
           </div>
         </div>
         <div class="col-md-5">
+          <h2 matTooltip="{{ account }}" *ngIf="account">
+            {{ account | slice: 0:9 }}...{{ account | slice: 33 }}
+          </h2>
           <div class="tokens-cover">
             <div class="text-center token-title">
               <h2>Buy X Tokens</h2>
@@ -87,7 +90,6 @@
                     aria-label="Default select example"
                     formControlName="fromTokenSelect"
                     [disabled]="!metamaskConnected || loading"
-                    (keypress)="keyPressNumbersWithDecimal($event)"
                     (change)="changeSelectFromToken(fromSelect.value)"
                     #fromSelect
                   >
@@ -113,6 +115,7 @@
                     aria-label="Text input with dropdown button"
                     formControlName="fromTokenInput"
                     placeholder="1 BNB"
+                    (keypress)="keyPressNumbersWithDecimal($event)"
                     [disabled]="!metamaskConnected || loading"
                     (input)="fromInputChange(fromInput.value)"
                     #fromInput
@@ -130,6 +133,7 @@
                     type="text"
                     class="form-control"
                     aria-label="Text input with dropdown button"
+                    (keypress)="keyPressNumbersWithDecimal($event)"
                     [disabled]="!metamaskConnected || loading"
                     formControlName="toTokenInput"
                     placeholder="3469.9 XTC"

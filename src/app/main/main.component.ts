@@ -1,16 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
 import { SnackbarService } from '../shared/snackbar.service';
-import mainAbi from './erc20.json';
-import minimalAbi from './minimalAbi.json';
-import presaleAbi from './presale.json';
+import mainAbi from '../contracts/abi/erc20.json';
+import minimalAbi from '../contracts/abi/minimalAbi.json';
+import presaleAbi from '../contracts/abi/presale.json';
 
 /*
   {
@@ -26,6 +21,8 @@ import presaleAbi from './presale.json';
 */
 
 const presaleAddress = '0x11e9a4554390B5304C6b96333195ee4d3B030Ed1';
+
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 type Token = {
   address: string;
@@ -79,7 +76,7 @@ export class MainComponent implements OnInit {
       toTokenInput: [null],
     });
   }
-
+  // to check if metamask not loggedin
   ngOnInit(): void {
     this.connectWallet();
   }
@@ -112,10 +109,12 @@ export class MainComponent implements OnInit {
 
   keyPressNumbersWithDecimal(event: any) {
     var charCode = event.which ? event.which : event.keyCode;
+    console.log(charCode);
     if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
       return false;
     }
+    //console.log(event.target.value.split['.']);
     return true;
   }
 
@@ -241,17 +240,7 @@ export class MainComponent implements OnInit {
       const presaleContract = new this.web3.eth.Contract(
         presaleAbi as any,
         presaleAddress
-      ); // TODO DUPL
-
-      /*const aMainContract = new this.web3.eth.Contract(
-        mainAbi as any,
-        this.tokenAddresses[0].address
       );
-
-      const bMainContract = new this.web3.eth.Contract(
-        mainAbi as any,
-        this.tokenAddresses[1].address
-      );*/
 
       const selectedToken = this.getSavedToken(
         this.fromTokenSelectControl?.value
@@ -272,12 +261,9 @@ export class MainComponent implements OnInit {
 
       if (selectedToken?.token === 'BNB') {
         const tokenBuy = await presaleContract.methods
-          .buyToken(this.account, '0')
+          .buyToken(ZERO_ADDRESS, '0'.repeat(18))
           .send({
             from: this.account,
-            /*this.web3.utils.toBN(
-              this.fromTokenInputControl?.value + '0'.repeat(18)
-            ),*/
             value: this.web3.utils.toWei(
               this.fromTokenInputControl?.value.toString(),
               'ether'
@@ -329,61 +315,5 @@ export class MainComponent implements OnInit {
 
   private isString(s: unknown) {
     return typeof s === 'string' || s instanceof String;
-  }
-
-  private toBaseUnit(value: string, decimals: number) {
-    if (!this.isString(value)) {
-      throw new Error(
-        'Pass strings to prevent floating point precision issues.'
-      );
-    }
-    const ten = this.web3.utils.toBN(10);
-    const base = ten.pow(this.web3.utils.toBN(decimals));
-
-    // Is it negative?
-    let negative = value.substring(0, 1) === '-';
-    if (negative) {
-      value = value.substring(1);
-    }
-
-    if (value === '.') {
-      throw new Error(
-        `Invalid value ${value} cannot be converted to` +
-          ` base unit with ${decimals} decimals.`
-      );
-    }
-
-    // Split it into a whole and fractional part
-    let comps = value.split('.');
-    if (comps.length > 2) {
-      throw new Error('Too many decimal points');
-    }
-
-    let whole = comps[0],
-      fraction = comps[1];
-
-    if (!whole) {
-      whole = '0';
-    }
-    if (!fraction) {
-      fraction = '0';
-    }
-    if (fraction.length > decimals) {
-      throw new Error('Too many decimal places');
-    }
-
-    while (fraction.length < decimals) {
-      fraction += '0';
-    }
-
-    const wholeBN = this.web3.utils.toBN(whole);
-    const fractionBN = this.web3.utils.toBN(fraction);
-    let wei = wholeBN.mul(base).add(fractionBN);
-
-    if (negative) {
-      wei = wei.neg();
-    }
-
-    return this.web3.utils.toBN(wei.toString(10));
   }
 }
