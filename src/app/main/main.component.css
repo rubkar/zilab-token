@@ -19,3 +19,11 @@
 .buy-token-input-group {
   margin: 0 0 1rem 0;
 }
+
+.btn-percent {
+  border-radius: 5px;
+  padding-left: 1rem;
+  background: linear-gradient(to right, #ec7d4f, #e85559);
+  border: none;
+  color: #fff;
+}

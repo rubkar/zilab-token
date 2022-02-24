@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[appTwoDigitDecimalNumber]',
@@ -17,6 +17,7 @@ export class TwoDigitDecimalNumberDirective {
     'Delete',
   ];
   constructor(private el: ElementRef) {}
+
   @HostListener('keydown', ['$event'])
   onKeyDown(event: KeyboardEvent) {
     console.log(this.el.nativeElement.value);

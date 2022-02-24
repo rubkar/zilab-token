@@ -1,28 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import detectEthereumProvider from '@metamask/detect-provider';
+import { Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import Web3 from 'web3';
-import { SnackbarService } from '../shared/snackbar.service';
 import mainAbi from '../contracts/abi/erc20.json';
 import minimalAbi from '../contracts/abi/minimalAbi.json';
 import presaleAbi from '../contracts/abi/presale.json';
-
-/*
-  {
-    address: '0x353fe7a233a6bF60fC3c4F3645BA467e3f33e3b4',
-    token: 'HUA',
-    balance: 0,
-  },
-  {
-    address: '0x29E8D7a08c87250E0F8E6874Ef755d7C737da07E',
-    token: 'HAR',
-    balance: 0,
-  },
-*/
-
-const presaleAddress = '0x11e9a4554390B5304C6b96333195ee4d3B030Ed1';
-
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+import { SnackbarService } from '../shared/snackbar.service';
+import { AppConstants } from '../shared/utils/constants';
 
 type Token = {
   address: string;
@@ -37,7 +29,7 @@ type Token = {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css'],
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, OnDestroy {
   tokenAddresses = [
     {
       address: '',
@@ -47,14 +39,14 @@ export class MainComponent implements OnInit {
       image: 'url(assets/images/7192.png)',
     },
     {
-      address: '0xF967692E2b7b1817f668300E2805cfCEd8A13A90',
+      address: environment.aAddress,
       token: 'A',
       balance: '0',
       parityRate: '0',
       image: 'url(assets/images/x.png)',
     },
     {
-      address: '0xdfEb02ed25fCf3466A7050B87Ce518CB868E0dBA',
+      address: environment.bAddress,
       token: 'B',
       balance: '0',
       parityRate: '0',
@@ -62,8 +54,13 @@ export class MainComponent implements OnInit {
     },
   ] as Token[];
 
+  provider!: any;
+
+  loadingSubject = new Subject<boolean>();
+
   loading = false;
   metamaskConnected = false;
+
   account!: string;
   web3!: Web3;
 
@@ -74,15 +71,41 @@ export class MainComponent implements OnInit {
     private readonly fb: FormBuilder
   ) {
     this.tokenBuyForm = this.fb.group({
-      fromTokenSelect: ['BNB'],
-      fromTokenInput: [null],
+      fromTokenSelect: new FormControl(
+        { value: 'BNB', disabled: !this.metamaskConnected || this.loading },
+        Validators.required
+      ),
+      fromTokenInput: new FormControl(
+        {
+          value: null,
+          disabled: !this.metamaskConnected || this.loading,
+        },
+        Validators.required
+      ),
       toTokenSelect: [{ value: 'X', disabled: true }],
-      toTokenInput: [null],
+      toTokenInput: new FormControl(
+        {
+          value: null,
+          disabled: this.shouldBuyFormInputDisable(),
+        },
+        Validators.required
+      ),
     });
   }
+
   // to check if metamask not loggedin
   ngOnInit(): void {
+    this.loadingSubject.subscribe((result) => {
+      this.loading = result;
+      this.enableOrDisableBuyFormInputs(result);
+    });
     this.connectWallet();
+  }
+
+  ngOnDestroy(): void {
+    if (this.provider) {
+      this.provider.disconnect();
+    }
   }
 
   connectOrBuyText(): string {
@@ -140,12 +163,10 @@ export class MainComponent implements OnInit {
 
   keyPressNumbersWithDecimal(event: any) {
     var charCode = event.which ? event.which : event.keyCode;
-    console.log(charCode);
     if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
       return false;
     }
-    //console.log(event.target.value.split['.']);
     return true;
   }
 
@@ -175,6 +196,22 @@ export class MainComponent implements OnInit {
     return this.tokenBuyForm.get('toTokenInput');
   }
 
+  private shouldBuyFormInputDisable(): boolean {
+    return !this.metamaskConnected || this.loading;
+  }
+
+  private enableOrDisableBuyFormInputs(isDisable: boolean): void {
+    if (isDisable) {
+      this.fromTokenInputControl?.disable();
+      this.fromTokenSelectControl?.disable();
+      this.toTokenInputControl?.disable();
+    } else {
+      this.fromTokenInputControl?.enable();
+      this.fromTokenSelectControl?.enable();
+      this.toTokenInputControl?.enable();
+    }
+  }
+
   private calculateParityToFrom(
     parityRate: string | undefined,
     value: string | undefined
@@ -200,28 +237,27 @@ export class MainComponent implements OnInit {
   }
 
   private connectWallet = async () => {
-    this.loading = true;
-    const provider = await detectEthereumProvider({
+    this.loadingSubject.next(true);
+    this.provider = await detectEthereumProvider({
       mustBeMetaMask: true,
     });
-    if (provider) {
+    if (this.provider) {
       try {
-        const accounts = await (provider as any).request({
+        const accounts = await this.provider.request({
           method: 'eth_requestAccounts',
         });
         if (accounts) {
           this.metamaskConnected = true;
         }
         this.account = accounts[0];
-        this.web3 = new Web3(provider as any);
+        this.web3 = new Web3(this.provider);
         const bnbBalanceResponse = await this.web3.eth.getBalance(this.account);
         const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
-        console.log(accounts);
 
         this.tokenAddresses.forEach(async (token) => {
           const presaleContract = new this.web3.eth.Contract(
             presaleAbi as any,
-            presaleAddress
+            environment.presaleAddress
           );
 
           if (token.token === 'BNB') {
@@ -252,7 +288,6 @@ export class MainComponent implements OnInit {
 
           token.parityRate = this.web3.utils.fromWei(rateOfToken);
         });
-        console.log(this.tokenAddresses);
       } catch (e) {
         this.snackbar.error(
           'Metamask grant failed! Please login in MetaMask',
@@ -266,15 +301,15 @@ export class MainComponent implements OnInit {
         window.open('https://metamask.io', '_blank');
       });
     }
-    this.loading = false;
+    this.loadingSubject.next(false);
   };
 
   private buyToken = async () => {
-    this.loading = true;
+    this.loadingSubject.next(true);
     try {
       const presaleContract = new this.web3.eth.Contract(
         presaleAbi as any,
-        presaleAddress
+        environment.presaleAddress
       );
 
       const selectedToken = this.getSavedToken(
@@ -286,17 +321,19 @@ export class MainComponent implements OnInit {
         selectedToken?.address
       );
 
-      // TODO Ask how much should?
       if (selectedToken?.token !== 'BNB') {
-        const approveSpend = await tokenContract.methods
-          .approve(presaleAddress, '1000000' + '0'.repeat(18))
+        await tokenContract.methods
+          .approve(
+            environment.presaleAddress,
+            this.fromTokenInputControl?.value + '0'.repeat(18)
+          )
           .send({ from: this.account });
-        console.log('spend approved ', approveSpend);
+        this.snackbar.success('Spend approved', 'OK');
       }
 
       if (selectedToken?.token === 'BNB') {
-        const tokenBuy = await presaleContract.methods
-          .buyToken(ZERO_ADDRESS, '0'.repeat(18))
+        await presaleContract.methods
+          .buyToken(AppConstants.ZERO_ADDRESS, '0'.repeat(18))
           .send({
             from: this.account,
             value: this.web3.utils.toWei(
@@ -304,17 +341,13 @@ export class MainComponent implements OnInit {
               'ether'
             ),
           });
-
-        console.log('buy', tokenBuy);
       } else {
-        const tokenBuy = await presaleContract.methods
+        await presaleContract.methods
           .buyToken(
             selectedToken?.address,
             this.fromTokenInputControl?.value + '0'.repeat(18)
           )
           .send({ from: this.account });
-
-        console.log('buy', tokenBuy);
       }
 
       this.snackbar.success('Presale was successful', '');
@@ -344,7 +377,7 @@ export class MainComponent implements OnInit {
       console.log(error);
       this.snackbar.error('Signing failed, please try again!', 'OK');
     } finally {
-      this.loading = false;
+      this.loadingSubject.next(false);
     }
   };
 }

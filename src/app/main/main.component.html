@@ -114,7 +114,6 @@
                       class="form-select one"
                       aria-label="Default select example"
                       formControlName="fromTokenSelect"
-                      [disabled]="!metamaskConnected || loading"
                       (change)="changeSelectFromToken(fromSelect.value)"
                       #fromSelect
                     >
@@ -128,22 +127,24 @@
                     <input
                       type="text"
                       class="form-control"
+                      maxlength="12"
                       aria-label="Text input with dropdown button"
                       formControlName="fromTokenInput"
                       placeholder="1 BNB"
                       (keypress)="keyPressNumbersWithDecimal($event)"
-                      [disabled]="!metamaskConnected || loading"
                       (input)="fromInputChange(fromInput.value)"
                       #fromInput
                     />
                     <button
                       class="btn btn-outline-secondary btn-percent"
+                      [disabled]="!metamaskConnected || loading"
                       (click)="calculateFiftyPercent($event)"
                     >
                       50%
                     </button>
                     <button
                       class="btn btn-outline-secondary btn-percent"
+                      [disabled]="!metamaskConnected || loading"
                       (click)="calculateMax($event)"
                     >
                       Max
@@ -162,12 +163,12 @@
                     </select>
                     <input
                       type="text"
+                      maxlength="12"
                       class="form-control"
                       aria-label="Text input with dropdown button"
-                      (keypress)="keyPressNumbersWithDecimal($event)"
-                      [disabled]="!metamaskConnected || loading"
                       formControlName="toTokenInput"
                       placeholder="3469.9 XTC"
+                      (keypress)="keyPressNumbersWithDecimal($event)"
                       (input)="toInputChange(toInput.value)"
                       #toInput
                     />

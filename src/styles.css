@@ -297,14 +297,6 @@ section.banner .row {
   width: 100%;
 }
 
-.btn-percent {
-  border-radius: 5px;
-  padding-left: 1rem;
-  background: linear-gradient(to right, #ec7d4f, #e85559);
-  border: none;
-  color: #fff;
-}
-
 .banner-main .tokens-cover .token-form form .input-group.mb-3 {
   margin-bottom: 25px !important;
 }
