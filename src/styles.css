@@ -297,18 +297,16 @@ section.banner .row {
   width: 100%;
 }
 
-.banner-main .tokens-cover .token-form form .input-group.mb-3 {
-  margin-bottom: 25px !important;
+.btn-percent {
+  border-radius: 5px;
+  padding-left: 1rem;
+  background: linear-gradient(to right, #ec7d4f, #e85559);
+  border: none;
+  color: #fff;
 }
 
-/* TODO  should be read dynamically somehow */
-.banner-main .tokens-cover select.form-select {
-  width: 15%;
-  -webkit-appearance: auto;
-  appearance: auto;
-  background-image: url(assets/images/7192.png);
-  background-size: auto;
-  background-position: right 25px center;
+.banner-main .tokens-cover .token-form form .input-group.mb-3 {
+  margin-bottom: 25px !important;
 }
 
 .banner-main .tokens-cover select.form-select.two {
@@ -320,18 +318,18 @@ section.banner .row {
   background-position: right 25px center;
 }
 
-.banner-main .tokens-cover .form-select:focus {
+/* .banner-main .tokens-cover .form-select:focus {
   border-color: none;
   box-shadow: none;
-}
+} */
 
-.banner-main .tokens-cover .token-form form input.form-control {
+/* .banner-main .tokens-cover .token-form form input.form-control {
   width: 85% !important;
-}
+} */
 
-section.banner select.form-select {
+/* section.banner select.form-select {
   border-right: none;
-}
+} */
 section.banner input.form-control {
   border-left: none;
   padding-left: 27px;
@@ -1351,9 +1349,21 @@ ul.slick-dots {
     width: 30px;
   }
 
-  .banner-main .tokens-cover .token-form form input.form-control {
-    width: 70% !important;
+  .success-snackbar {
+    background: #4ac155;
   }
+
+  .warn-snackbar .mat-simple-snackbar-action {
+    color: black;
+  }
+
+  .success-snackbar .mat-simple-snackbar-action {
+    color: white;
+  }
+
+  /* .banner-main .tokens-cover .token-form form input.form-control {
+    width: 70% !important;
+  } */
   section.smart-content .row {
     display: flex;
     justify-content: center;

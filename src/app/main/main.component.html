@@ -69,8 +69,21 @@
             </div>
           </div>
         </div>
-        <div class="col-md-5">
-          <h2 matTooltip="{{ account }}" *ngIf="account">
+        <div class="col-md-5 swap-card">
+          <h2
+            matTooltip="{{ account }}"
+            *ngIf="account"
+            ngxClipboard
+            [cbContent]="account"
+            (click)="
+              snackbar.openWithIcon(
+                'Address copied into clipboard',
+                'fas',
+                'triangle-exclamation',
+                'white'
+              )
+            "
+          >
             {{ account | slice: 0:9 }}...{{ account | slice: 33 }}
           </h2>
           <div class="tokens-cover">
@@ -78,69 +91,89 @@
               <h2>Buy X Tokens</h2>
               <p>Trade tokens is an instant</p>
             </div>
+
             <div class="token-form">
               <form
                 [formGroup]="tokenBuyForm"
                 (ngSubmit)="connectWalletOrBuy()"
                 (keydown.enter)="$event.preventDefault()"
               >
-                <div class="input-group mb-3">
-                  <select
-                    class="form-select"
-                    aria-label="Default select example"
-                    formControlName="fromTokenSelect"
-                    [disabled]="!metamaskConnected || loading"
-                    (change)="changeSelectFromToken(fromSelect.value)"
-                    #fromSelect
-                  >
-                    <option
-                      *ngFor="let token of tokenAddresses"
-                      [value]="token.token"
+                <div class="buy-token-input-group">
+                  <div class="input-group">
+                    <select
+                      style="
+                        width: 15%;
+                        -webkit-appearance: auto;
+                        appearance: auto;
+                        background-size: auto;
+                        background-position: right 25px center;
+                      "
+                      [style.background-image]="
+                        getSelectedTokenImage(fromSelect.value)
+                      "
+                      class="form-select one"
+                      aria-label="Default select example"
+                      formControlName="fromTokenSelect"
+                      [disabled]="!metamaskConnected || loading"
+                      (change)="changeSelectFromToken(fromSelect.value)"
+                      #fromSelect
                     >
-                      {{ token.token }}
-                    </option>
-                  </select>
-                  <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                      data-bs-toggle="dropdown" aria-expanded="false"><img
-                          src="images/diamondshape.png" alt="" width=25px></button>
-                  <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                  </ul> 
-                (keypress)="keyPressNumbersWithDecimal($event)"
-                -->
-                  <input
-                    type="text"
-                    class="form-control"
-                    aria-label="Text input with dropdown button"
-                    formControlName="fromTokenInput"
-                    placeholder="1 BNB"
-                    (keypress)="keyPressNumbersWithDecimal($event)"
-                    [disabled]="!metamaskConnected || loading"
-                    (input)="fromInputChange(fromInput.value)"
-                    #fromInput
-                  />
+                      <option
+                        *ngFor="let token of tokenAddresses"
+                        [value]="token.token"
+                      >
+                        {{ token.token }}
+                      </option>
+                    </select>
+                    <input
+                      type="text"
+                      class="form-control"
+                      aria-label="Text input with dropdown button"
+                      formControlName="fromTokenInput"
+                      placeholder="1 BNB"
+                      (keypress)="keyPressNumbersWithDecimal($event)"
+                      [disabled]="!metamaskConnected || loading"
+                      (input)="fromInputChange(fromInput.value)"
+                      #fromInput
+                    />
+                    <button
+                      class="btn btn-outline-secondary btn-percent"
+                      (click)="calculateFiftyPercent($event)"
+                    >
+                      50%
+                    </button>
+                    <button
+                      class="btn btn-outline-secondary btn-percent"
+                      (click)="calculateMax($event)"
+                    >
+                      Max
+                    </button>
+                  </div>
                 </div>
-                <div class="input-group mb-3">
-                  <select
-                    class="form-select two"
-                    aria-label="Default select example"
-                    formControlName="toTokenSelect"
-                  >
-                    <option selected></option>
-                  </select>
-                  <input
-                    type="text"
-                    class="form-control"
-                    aria-label="Text input with dropdown button"
-                    (keypress)="keyPressNumbersWithDecimal($event)"
-                    [disabled]="!metamaskConnected || loading"
-                    formControlName="toTokenInput"
-                    placeholder="3469.9 XTC"
-                    (input)="toInputChange(toInput.value)"
-                    #toInput
-                  />
+
+                <div class="buy-token-input-group">
+                  <div class="input-group">
+                    <select
+                      class="form-select two"
+                      aria-label="Default select example"
+                      formControlName="toTokenSelect"
+                    >
+                      <option selected></option>
+                    </select>
+                    <input
+                      type="text"
+                      class="form-control"
+                      aria-label="Text input with dropdown button"
+                      (keypress)="keyPressNumbersWithDecimal($event)"
+                      [disabled]="!metamaskConnected || loading"
+                      formControlName="toTokenInput"
+                      placeholder="3469.9 XTC"
+                      (input)="toInputChange(toInput.value)"
+                      #toInput
+                    />
+                  </div>
                 </div>
+
                 <div class="text-center connect-wallet">
                   <button
                     [disabled]="loading"

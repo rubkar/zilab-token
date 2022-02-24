@@ -29,6 +29,7 @@ type Token = {
   token: string;
   balance: string;
   parityRate: string;
+  image: string;
 };
 
 @Component({
@@ -43,18 +44,21 @@ export class MainComponent implements OnInit {
       token: 'BNB',
       balance: '0',
       parityRate: '0',
+      image: 'url(assets/images/7192.png)',
     },
     {
       address: '0xF967692E2b7b1817f668300E2805cfCEd8A13A90',
       token: 'A',
       balance: '0',
       parityRate: '0',
+      image: 'url(assets/images/x.png)',
     },
     {
       address: '0xdfEb02ed25fCf3466A7050B87Ce518CB868E0dBA',
       token: 'B',
       balance: '0',
       parityRate: '0',
+      image: 'url(assets/images/7192.png)',
     },
   ] as Token[];
 
@@ -66,13 +70,13 @@ export class MainComponent implements OnInit {
   tokenBuyForm!: FormGroup;
 
   constructor(
-    private readonly snackbar: SnackbarService,
+    public readonly snackbar: SnackbarService,
     private readonly fb: FormBuilder
   ) {
     this.tokenBuyForm = this.fb.group({
       fromTokenSelect: ['BNB'],
       fromTokenInput: [null],
-      toTokenSelect: [{ value: null, disabled: true }],
+      toTokenSelect: [{ value: 'X', disabled: true }],
       toTokenInput: [null],
     });
   }
@@ -83,6 +87,10 @@ export class MainComponent implements OnInit {
 
   connectOrBuyText(): string {
     return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
+  }
+
+  getSelectedTokenImage(name: string): string | undefined {
+    return this.getSavedToken(name)?.image;
   }
 
   changeSelectFromToken(tokenName: string): void {
@@ -107,6 +115,29 @@ export class MainComponent implements OnInit {
     );
   }
 
+  calculateFiftyPercent(event: any): void {
+    event.preventDefault();
+    const balance = this.web3.utils.toWei(
+      this.selectedToken?.balance as string
+    );
+    if (balance) {
+      const val = this.web3.utils
+        .fromWei(this.web3.utils.toBN(balance).divn(2))
+        .toString();
+      this.fromTokenInputControl?.setValue(val);
+      this.fromInputChange(val);
+    }
+  }
+
+  calculateMax(event: any): void {
+    event.preventDefault();
+    const balance = this.selectedToken?.balance as string;
+    if (balance) {
+      this.fromTokenInputControl?.setValue(balance);
+    }
+    this.fromInputChange(balance);
+  }
+
   keyPressNumbersWithDecimal(event: any) {
     var charCode = event.which ? event.which : event.keyCode;
     console.log(charCode);
@@ -126,6 +157,10 @@ export class MainComponent implements OnInit {
     if (!this.metamaskConnected) {
       this.connectWallet();
     }
+  }
+
+  get selectedToken(): Token | undefined {
+    return this.getSavedToken(this.fromTokenSelectControl?.value);
   }
 
   get fromTokenSelectControl(): AbstractControl | null {
@@ -312,8 +347,4 @@ export class MainComponent implements OnInit {
       this.loading = false;
     }
   };
-
-  private isString(s: unknown) {
-    return typeof s === 'string' || s instanceof String;
-  }
 }

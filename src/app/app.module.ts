@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { ClipboardModule } from 'ngx-clipboard';
 import { CarouselModule } from 'ngx-owl-carousel-o';
 import { AboutICOComponent } from './about-ico/about-ico.component';
 import { AdvisorsComponent } from './advisors/advisors.component';
@@ -26,6 +27,8 @@ import { OurDataComponent } from './our-data/our-data.component';
 import { PapersComponent } from './papers/papers.component';
 import { PartnersComponent } from './partners/partners.component';
 import { RoadmapComponent } from './roadmap/roadmap.component';
+import { IconSnackbarComponent } from './shared/icon-snackbar.component';
+import { TwoDigitDecimalNumberDirective } from './shared/two-digit-decimal-number.directive';
 import { SmartContectComponent } from './smart-contect/smart-contect.component';
 import { StatisticComponent } from './statistic/statistic.component';
 import { TokensComponent } from './tokens/tokens.component';
@@ -58,9 +61,12 @@ const MATERIAL_MODULES = [
     Comment2Component,
     AboutICOComponent,
     GettingTouchComponent,
+    IconSnackbarComponent,
+    TwoDigitDecimalNumberDirective,
   ],
   imports: [
     MATERIAL_MODULES,
+    ClipboardModule,
     BrowserModule,
     BrowserAnimationsModule,
     FontAwesomeModule,

@@ -3,3 +3,19 @@
   max-width: unset !important;
   white-space: pre-wrap;
 }
+
+.swap-card h2 {
+  cursor: pointer;
+}
+
+.swap-card h2:hover {
+  color: green;
+}
+
+.form-select {
+  max-width: 100px;
+}
+
+.buy-token-input-group {
+  margin: 0 0 1rem 0;
+}
