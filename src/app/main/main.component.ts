@@ -201,7 +201,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   private enableOrDisableBuyFormInputs(isDisable: boolean): void {
-    if (isDisable) {
+    if (isDisable || !this.metamaskConnected) {
       this.fromTokenInputControl?.disable();
       this.fromTokenSelectControl?.disable();
       this.toTokenInputControl?.disable();
@@ -249,8 +249,19 @@ export class MainComponent implements OnInit, OnDestroy {
         if (accounts) {
           this.metamaskConnected = true;
         }
+
         this.account = accounts[0];
         this.web3 = new Web3(this.provider);
+
+        const networkId = await this.web3.eth.net.getId();
+        if (environment.bscNetworkId !== networkId) {
+          this.snackbar.error(
+            'Please switch to Binance Smart Chain Network',
+            'OK'
+          );
+          return;
+        }
+
         const bnbBalanceResponse = await this.web3.eth.getBalance(this.account);
         const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
 
@@ -372,7 +383,6 @@ export class MainComponent implements OnInit, OnDestroy {
         const balance = this.web3.utils.fromWei(tokenBalance);
         token.balance = balance;
       });
-      console.log(this.tokenAddresses);
     } catch (error: any) {
       console.log(error);
       this.snackbar.error('Signing failed, please try again!', 'OK');

@@ -3,4 +3,5 @@ export const environment = {
   presaleAddress: 'FILL_IN',
   aAddress: 'FILL_IN',
   bAddress: 'FILL_IN',
+  bscNetworkId: 56,
 };
