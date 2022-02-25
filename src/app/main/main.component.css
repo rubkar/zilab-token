@@ -1,0 +1,29 @@
+::ng-deep .mat-tooltip {
+  font-size: 18px;
+  max-width: unset !important;
+  white-space: pre-wrap;
+}
+
+.swap-card h2 {
+  cursor: pointer;
+}
+
+.swap-card h2:hover {
+  color: green;
+}
+
+.form-select {
+  max-width: 100px;
+}
+
+.buy-token-input-group {
+  margin: 0 0 1rem 0;
+}
+
+.btn-percent {
+  border-radius: 5px;
+  padding-left: 1rem;
+  background: linear-gradient(to right, #ec7d4f, #e85559);
+  border: none;
+  color: #fff;
+}

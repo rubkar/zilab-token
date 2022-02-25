@@ -1,3 +1,7 @@
 export const environment = {
-  production: true
+  production: true,
+  presaleAddress: 'FILL_IN',
+  aAddress: 'FILL_IN',
+  bAddress: 'FILL_IN',
+  bscNetworkId: 56,
 };
