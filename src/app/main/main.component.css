@@ -4,7 +4,7 @@
   white-space: pre-wrap;
 }
 
-.swap-card h2 {
+.swap-card .chip {
   cursor: pointer;
 }
 
@@ -26,4 +26,25 @@
   background: linear-gradient(to right, #ec7d4f, #e85559);
   border: none;
   color: #fff;
+}
+
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
+  padding-left: 1rem;
+  background: linear-gradient(to right, #ec7d4f, #e85559);
+  border: none;
+  color: #fff;
+}
+
+.chip img {
+  float: left;
+  margin: 0 10px 0 -25px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
 }

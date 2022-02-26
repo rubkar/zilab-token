@@ -70,22 +70,40 @@
           </div>
         </div>
         <div class="col-md-5 swap-card">
-          <h2
-            matTooltip="{{ account }}"
-            *ngIf="account"
-            ngxClipboard
-            [cbContent]="account"
-            (click)="
-              snackbar.openWithIcon(
-                'Address copied into clipboard',
-                'fas',
-                'triangle-exclamation',
-                'white'
-              )
-            "
-          >
-            {{ account | slice: 0:9 }}...{{ account | slice: 33 }}
-          </h2>
+          <div class="container mb-2 float-left">
+            <div class="row" *ngIf="account && lockedTokenAmount">
+              <div class="col-sm-4">
+                <div class="chip">
+                  <img
+                    src="assets/images/x.png"
+                    alt="Balance of x token"
+                    width="96"
+                    height="96"
+                  />
+                  {{ lockedTokenAmount }}
+                </div>
+              </div>
+              <div class="col-sm-2">
+                <div
+                  class="chip"
+                  matTooltip="{{ account }}"
+                  *ngIf="account"
+                  ngxClipboard
+                  [cbContent]="account"
+                  (click)="
+                    snackbar.openWithIcon(
+                      'Address copied into clipboard',
+                      'fas',
+                      'triangle-exclamation',
+                      'white'
+                    )
+                  "
+                >
+                  {{ account | slice: 0:9 }}...{{ account | slice: 33 }}
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="tokens-cover">
             <div class="text-center token-title">
               <h2>Buy X Tokens</h2>
