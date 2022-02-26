@@ -65,6 +65,9 @@ export class MainComponent implements OnInit, OnDestroy {
   web3!: Web3;
 
   tokenBuyForm!: FormGroup;
+  lockedTokenAmount!: string;
+
+  presaleContract!: any;
 
   constructor(
     public readonly snackbar: SnackbarService,
@@ -262,20 +265,31 @@ export class MainComponent implements OnInit, OnDestroy {
           return;
         }
 
+        this.presaleContract = new this.web3.eth.Contract(
+          presaleAbi as any,
+          environment.presaleAddress
+        );
+
+        const lockedTokenBalance: any = await this.presaleContract.methods
+          .buyersAmount(this.account)
+          .call();
+        this.lockedTokenAmount = this.web3.utils.fromWei(
+          this.web3.utils.toBN(lockedTokenBalance['amount'])
+        );
+
+        /*lockedTokenBalance['amount'].substring(
+          0,
+          lockedTokenBalance['amount'].length - AppConstants.TOKEN_DECIMAL
+        );*/
+
         const bnbBalanceResponse = await this.web3.eth.getBalance(this.account);
-        const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
+        const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse); //formatBalance(
 
         this.tokenAddresses.forEach(async (token) => {
-          const presaleContract = new this.web3.eth.Contract(
-            presaleAbi as any,
-            environment.presaleAddress
-          );
-
           if (token.token === 'BNB') {
             token.balance = bnbBalance;
-            const rateOfNativeCurrencyResponse = await presaleContract.methods
-              .rate()
-              .call();
+            const rateOfNativeCurrencyResponse =
+              await this.presaleContract.methods.rate().call();
             token.parityRate = this.web3.utils.fromWei(
               rateOfNativeCurrencyResponse
             );
@@ -293,10 +307,12 @@ export class MainComponent implements OnInit, OnDestroy {
 
           token.balance = this.web3.utils.fromWei(tokenBalance);
 
-          const rateOfToken = await presaleContract.methods
+          // TODO format 6 decimal
+          //token.balance = formatBalance(weiBalance);
+
+          const rateOfToken = await this.presaleContract.methods
             .tokenPrices(token.address)
             .call();
-
           token.parityRate = this.web3.utils.fromWei(rateOfToken);
         });
       } catch (e) {
@@ -318,11 +334,6 @@ export class MainComponent implements OnInit, OnDestroy {
   private buyToken = async () => {
     this.loadingSubject.next(true);
     try {
-      const presaleContract = new this.web3.eth.Contract(
-        presaleAbi as any,
-        environment.presaleAddress
-      );
-
       const selectedToken = this.getSavedToken(
         this.fromTokenSelectControl?.value
       );
@@ -336,15 +347,19 @@ export class MainComponent implements OnInit, OnDestroy {
         await tokenContract.methods
           .approve(
             environment.presaleAddress,
-            this.fromTokenInputControl?.value + '0'.repeat(18)
+            this.fromTokenInputControl?.value +
+              '0'.repeat(AppConstants.TOKEN_DECIMAL)
           )
           .send({ from: this.account });
         this.snackbar.success('Spend approved', 'OK');
       }
 
       if (selectedToken?.token === 'BNB') {
-        await presaleContract.methods
-          .buyToken(AppConstants.ZERO_ADDRESS, '0'.repeat(18))
+        await this.presaleContract.methods
+          .buyToken(
+            AppConstants.ZERO_ADDRESS,
+            '0'.repeat(AppConstants.TOKEN_DECIMAL)
+          )
           .send({
             from: this.account,
             value: this.web3.utils.toWei(
@@ -353,10 +368,11 @@ export class MainComponent implements OnInit, OnDestroy {
             ),
           });
       } else {
-        await presaleContract.methods
+        await this.presaleContract.methods
           .buyToken(
             selectedToken?.address,
-            this.fromTokenInputControl?.value + '0'.repeat(18)
+            this.fromTokenInputControl?.value +
+              '0'.repeat(AppConstants.TOKEN_DECIMAL)
           )
           .send({ from: this.account });
       }
@@ -369,6 +385,10 @@ export class MainComponent implements OnInit, OnDestroy {
             this.account
           );
           const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse);
+
+          /* TODO decimal format const bnbBalance = formatBalance(
+            this.web3.utils.fromWei(bnbBalanceResponse)
+          );*/
           token.balance = bnbBalance;
           return;
         }
