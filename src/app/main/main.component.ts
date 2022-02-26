@@ -270,17 +270,7 @@ export class MainComponent implements OnInit, OnDestroy {
           environment.presaleAddress
         );
 
-        const lockedTokenBalance: any = await this.presaleContract.methods
-          .buyersAmount(this.account)
-          .call();
-        this.lockedTokenAmount = this.web3.utils.fromWei(
-          this.web3.utils.toBN(lockedTokenBalance['amount'])
-        );
-
-        /*lockedTokenBalance['amount'].substring(
-          0,
-          lockedTokenBalance['amount'].length - AppConstants.TOKEN_DECIMAL
-        );*/
+        this.fetchBuyersAmount();
 
         const bnbBalanceResponse = await this.web3.eth.getBalance(this.account);
         const bnbBalance = this.web3.utils.fromWei(bnbBalanceResponse); //formatBalance(
@@ -331,6 +321,15 @@ export class MainComponent implements OnInit, OnDestroy {
     this.loadingSubject.next(false);
   };
 
+  private fetchBuyersAmount = async () => {
+    const lockedTokenBalance: any = await this.presaleContract.methods
+      .buyersAmount(this.account)
+      .call();
+    this.lockedTokenAmount = this.web3.utils.fromWei(
+      this.web3.utils.toBN(lockedTokenBalance['amount'])
+    );
+  };
+
   private buyToken = async () => {
     this.loadingSubject.next(true);
     try {
@@ -344,13 +343,14 @@ export class MainComponent implements OnInit, OnDestroy {
       );
 
       if (selectedToken?.token !== 'BNB') {
-        await tokenContract.methods
+        const approved = await tokenContract.methods
           .approve(
             environment.presaleAddress,
             this.fromTokenInputControl?.value +
               '0'.repeat(AppConstants.TOKEN_DECIMAL)
           )
           .send({ from: this.account });
+        console.log(approved);
         this.snackbar.success('Spend approved', 'OK');
       }
 
@@ -378,6 +378,7 @@ export class MainComponent implements OnInit, OnDestroy {
       }
 
       this.snackbar.success('Presale was successful', '');
+      this.fetchBuyersAmount();
 
       this.tokenAddresses.forEach(async (token) => {
         if (!token.address) {
