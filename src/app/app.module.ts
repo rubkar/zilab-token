@@ -12,26 +12,27 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ClipboardModule } from 'ngx-clipboard';
 import { CarouselModule } from 'ngx-owl-carousel-o';
-import { AboutICOComponent } from './about-ico/about-ico.component';
-import { AdvisorsComponent } from './advisors/advisors.component';
+import { AboutICOComponent } from './components/about-ico/about-ico.component';
+import { AdvisorsComponent } from './components/advisors/advisors.component';
 import { AppComponent } from './app.component';
-import { Comment2Component } from './comment2/comment2.component';
-import { EarthLightComponent } from './earth-light/earth-light.component';
-import { FaquesComponent } from './faques/faques.component';
-import { FooterComponent } from './footer/footer.component';
-import { GettingTouchComponent } from './getting-touch/getting-touch.component';
-import { HeaderComponent } from './header/header.component';
-import { LatestNewsComponent } from './latest-news/latest-news.component';
-import { MainComponent } from './main/main.component';
-import { OurDataComponent } from './our-data/our-data.component';
-import { PapersComponent } from './papers/papers.component';
-import { PartnersComponent } from './partners/partners.component';
-import { RoadmapComponent } from './roadmap/roadmap.component';
-import { IconSnackbarComponent } from './shared/icon-snackbar.component';
-import { TwoDigitDecimalNumberDirective } from './shared/two-digit-decimal-number.directive';
-import { SmartContectComponent } from './smart-contect/smart-contect.component';
-import { StatisticComponent } from './statistic/statistic.component';
-import { TokensComponent } from './tokens/tokens.component';
+import { Comment2Component } from './components/comment2/comment2.component';
+import { EarthLightComponent } from './components/earth-light/earth-light.component';
+import { FaquesComponent } from './components/faques/faques.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { GettingTouchComponent } from './components/getting-touch/getting-touch.component';
+import { HeaderComponent } from './components/header/header.component';
+import { LatestNewsComponent } from './components/latest-news/latest-news.component';
+import { MainComponent } from './components/main/main.component';
+import { OurDataComponent } from './components/our-data/our-data.component';
+import { PapersComponent } from './components/papers/papers.component';
+import { PartnersComponent } from './components/partners/partners.component';
+import { RoadmapComponent } from './components/roadmap/roadmap.component';
+import { IconSnackbarComponent } from './components/shared/icon-snackbar.component';
+import { TwoDigitDecimalNumberDirective } from './components/shared/two-digit-decimal-number.directive';
+import { SmartContectComponent } from './components/smart-contect/smart-contect.component';
+import { StatisticComponent } from './components/statistic/statistic.component';
+import { TokensComponent } from './components/tokens/tokens.component';
+import { HttpClientModule } from '@angular/common/http';
 
 const MATERIAL_MODULES = [
   ReactiveFormsModule,
@@ -72,6 +73,7 @@ const MATERIAL_MODULES = [
     FontAwesomeModule,
     FormsModule,
     CarouselModule,
+    HttpClientModule
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
