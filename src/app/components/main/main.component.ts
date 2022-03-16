@@ -16,6 +16,7 @@ import presaleAbi from '../contracts/abi/presale.json';
 import { SnackbarService } from '../shared/snackbar.service';
 import { AppConstants } from '../shared/utils/constants';
 import {WalletConnectService} from "../../services/wallet-connect.service";
+import {Authorization} from "../../authorization";
 
 type Token = {
   address: string;
@@ -69,12 +70,14 @@ export class MainComponent implements OnInit, OnDestroy {
   lockedTokenAmount!: string;
 
   presaleContract!: any;
+  isValidKYC!: any;
 
   constructor(
     public readonly snackbar: SnackbarService,
     private readonly fb: FormBuilder,
     private walletConnectService: WalletConnectService
   ) {
+
     this.tokenBuyForm = this.fb.group({
       fromTokenSelect: new FormControl(
         { value: 'BNB', disabled: !this.metamaskConnected || this.loading },
@@ -104,7 +107,14 @@ export class MainComponent implements OnInit, OnDestroy {
       this.loading = result;
       this.enableOrDisableBuyFormInputs(result);
     });
-    if (this.walletConnectService.isValidKYC()) {
+
+    this.walletConnectService.isValidKYC().then(
+      (res: any) => { // Success
+        this.isValidKYC = res.authorized;
+      }
+    )
+
+    if (this.isValidKYC) {
       this.connectWallet();
     }
   }
@@ -116,7 +126,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   connectOrBuyText(): string {
-    if (this.walletConnectService.isValidKYC()) {
+    if (this.isValidKYC) {
       return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
     } else {
       return 'Verify Your Account Before Buying The Tokens!';
@@ -188,7 +198,7 @@ export class MainComponent implements OnInit, OnDestroy {
     }
 
     if (!this.metamaskConnected) {
-      if (!this.walletConnectService.isValidKYC()) {
+      if (!this.isValidKYC) {
         this.verifyKYC();
       } else {
         this.connectWallet();
