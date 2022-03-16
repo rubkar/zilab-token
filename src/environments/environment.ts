@@ -10,5 +10,6 @@ export const environment = {
   telegram: 'https://telegram.org',
   youtube: 'https://youtube.com',
   // Presale end dates
-  preSaleEndDate: '24.04.2022'
+  preSaleEndDate: '24.04.2022',
+  kycValidationEndpoint: 'https://wallet.gruuk.com/public/validate-authorization'
 };

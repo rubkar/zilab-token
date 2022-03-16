@@ -4,4 +4,5 @@ export const environment = {
   aAddress: 'FILL_IN',
   bAddress: 'FILL_IN',
   bscNetworkId: 56,
+  kycValidationEndpoint: 'https://wallet.gruuk.com/public/validate-authorization'
 };
