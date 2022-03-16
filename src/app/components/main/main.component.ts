@@ -15,6 +15,7 @@ import minimalAbi from '../contracts/abi/minimalAbi.json';
 import presaleAbi from '../contracts/abi/presale.json';
 import { SnackbarService } from '../shared/snackbar.service';
 import { AppConstants } from '../shared/utils/constants';
+import {WalletConnectService} from "../../services/wallet-connect.service";
 
 type Token = {
   address: string;
@@ -71,7 +72,8 @@ export class MainComponent implements OnInit, OnDestroy {
 
   constructor(
     public readonly snackbar: SnackbarService,
-    private readonly fb: FormBuilder
+    private readonly fb: FormBuilder,
+    private walletConnectService: WalletConnectService
   ) {
     this.tokenBuyForm = this.fb.group({
       fromTokenSelect: new FormControl(
@@ -102,7 +104,9 @@ export class MainComponent implements OnInit, OnDestroy {
       this.loading = result;
       this.enableOrDisableBuyFormInputs(result);
     });
-    this.connectWallet();
+    if (this.walletConnectService.isValidKYC()) {
+      this.connectWallet();
+    }
   }
 
   ngOnDestroy(): void {
@@ -112,7 +116,11 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   connectOrBuyText(): string {
-    return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
+    if (this.walletConnectService.isValidKYC()) {
+      return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
+    } else {
+      return 'Verify Your Account Before Buying The Tokens!';
+    }
   }
 
   getSelectedTokenImage(name: string): string | undefined {
@@ -174,12 +182,17 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   connectWalletOrBuy(): void {
+
     if (this.metamaskConnected) {
       this.buyToken();
     }
 
     if (!this.metamaskConnected) {
-      this.connectWallet();
+      if (!this.walletConnectService.isValidKYC()) {
+        this.verifyKYC();
+      } else {
+        this.connectWallet();
+      }
     }
   }
 
@@ -329,6 +342,14 @@ export class MainComponent implements OnInit, OnDestroy {
       this.web3.utils.toBN(lockedTokenBalance['amount'])
     );
   };
+
+  private verifyKYC() {
+    const snackRef = this.snackbar.error('Please login into KYC platform to buy the tokens.', 'OK');
+    snackRef.afterDismissed().subscribe(() => {
+      window.open('https://wallet.gruuk.com', '_blank');
+    });
+    return;
+  }
 
   private buyToken = async () => {
     this.loadingSubject.next(true);

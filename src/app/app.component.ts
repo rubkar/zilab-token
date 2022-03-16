@@ -12,7 +12,9 @@ import { fas } from '@fortawesome/free-solid-svg-icons';
 export class AppComponent {
   title = 'cyptoland';
 
-  constructor(library: FaIconLibrary) {
+  constructor(
+    library: FaIconLibrary,
+  ) {
     library.addIconPacks(fas, far, fab);
   }
 }
