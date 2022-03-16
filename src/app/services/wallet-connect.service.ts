@@ -11,7 +11,6 @@ export class WalletConnectService {
   ) { }
 
   public isValidKYC() {
-    return true;
     return this.httpClient.get<any[]>('https://wallet.gruuk.com/public/validate-authorization')
       .subscribe(
         (response) => {
