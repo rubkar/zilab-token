@@ -301,13 +301,29 @@ section.banner .row {
   margin-bottom: 25px !important;
 }
 
+.form-select:enabled {
+  background-color: #e9ecef;
+}
+
 .banner-main .tokens-cover select.form-select.two {
-  width: 15%;
-  -webkit-appearance: auto;
-  appearance: auto;
-  background-image: url(assets/images/x.png);
-  background-size: auto;
+  width: 20%;
+  height: 55px;
+  background-image: url(assets/images/gruuk_logo_small.png);
   background-position: right 25px center;
+  background-size: auto;
+}
+
+.banner-main .tokens-cover select.form-select.one {
+  height: 55px;
+}
+
+button.btn.btn-outline-secondary.btn-percent:hover {
+  background: #2add82;
+}
+
+input.form-control:hover {
+  border: 1px solid #e85559;
+  cursor: pointer !important;
 }
 
 /* .banner-main .tokens-cover .form-select:focus {
@@ -539,7 +555,7 @@ a.play-btn {
 .trans {
   background: none;
   box-shadow: none;
-  height: 100%;
+  height: 70%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -699,6 +715,9 @@ section.section-6 .brand-cover .no-of-brands span i.fas.fa-star:last-child {
 .cases-image {
   max-width: max-content;
 }
+.cases-image p {
+  font-size:60px; color: #e85559; font-weight: bold;
+}
 
 .cases-content {
   width: calc(100% - 160px);
@@ -729,7 +748,11 @@ section.section-6 .brand-cover .no-of-brands span i.fas.fa-star:last-child {
   box-shadow: 0px 0px 15px 0px #ec7d4f;
   padding: 15px 60px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 20px;
+}
+
+.orange-color {
+  color: #e85559 !important;
 }
 
 /* /Section-7 */

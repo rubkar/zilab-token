@@ -4,8 +4,8 @@
       <div class="row">
         <div class="col-lg-4">
           <a href="#">
-            <img src="../../../assets/images/crypto-logo.png" alt="img">
-            <p>&copy; 2018, cryptoland</p>
+            <img src="../../../assets/images/gruuk_logo.png" alt="{{ environment.tokenName}} logo" style="height: 100px" title="Logo">
+            <p>&copy; 2022, {{ environment.tokenName }}. All Rights Reserved.</p>
           </a>
         </div>
         <div class="col-lg-4">
@@ -39,10 +39,18 @@
           </ul>
         </div>
         <div class="col-lg-4">
-          <h5>Subscribe</h5>
+          <h5>I want to receive latest news about {{ environment.tokenName }} project.</h5>
           <div class="foot-com">
-            <input type="email" name="Email" placeholder="Email">
-            <button class="hover-btn" type="submit">SEND</button>
+            <form #contactForm = "ngForm" (ngSubmit) = "onClickSubmit(contactForm.value)" >
+              <input type="email" name="email" placeholder="Email" ngModel>
+              <button class="hover-btn" type="submit">Subscribe
+                <span
+                  *ngIf="loading"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span> </button>
+            </form>
           </div>
         </div>
       </div>

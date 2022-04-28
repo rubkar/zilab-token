@@ -4,5 +4,6 @@ export const environment = {
   aAddress: 'FILL_IN',
   bAddress: 'FILL_IN',
   bscNetworkId: 56,
+  preSaleEndDate: '2025-06-29T00:00:00',
   kycValidationEndpoint: 'https://wallet.gruuk.com/public/validate-authorization'
 };

@@ -3,7 +3,10 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
-          <img src="../../../assets/images/crypto-logo.png" alt="">
+          <img src="https://gruuk.com/images/gruuk_logo.png" style="height:60px" alt="">
+          <span style="color: white; font-size:30px; font-weight: bold; padding-left: 6px; position:relative; top: 6px;">
+            {{ environment.tokenName }}
+          </span>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -13,40 +16,33 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a class="nav-link" aria-current="page" href="#about">About</a>
+              <a class="nav-link" aria-current="page" href="#about-us">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#service">Services</a>
+              <a class="nav-link" href="#projects">Projects</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#roadmap">Road Map</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#statistic">Statistic</a>
+              <a class="nav-link" href="#how-to-buy">How to buy ${{ environment.tokenSymbol}} </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#tokens">Token</a>
+              <a class="nav-link" href="#tokenomics">Tokenomics</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#papers">White Pappers</a>
+              <a class="nav-link" href="#tokens">Token Information</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#faques">FAQ</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contact us</a>
+            </li>
           </ul>
           <form class="d-flex">
-            <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                En
-              </button>
-              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">ACT 1</a></li>
-                <li><a class="dropdown-item" href="#">ACT 2</a></li>
-              </ul>
-            </div>
-            <button class="btn btn-outline-success" type="submit">Join Cryptoland ICO</button>
+            <button class="btn btn-outline-success" type="submit">Join ${{ environment.tokenSymbol }} <fa-icon [icon]="faTelegram"></fa-icon> Telegram
+            </button>
           </form>
         </div>
       </div>

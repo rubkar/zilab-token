@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Authorization} from "../authorization";
 import { environment } from 'src/environments/environment';
 
@@ -12,8 +12,13 @@ export class WalletConnectService {
     private httpClient: HttpClient
   ) { }
 
-  public async isValidKYC() {
-    const response = await this.httpClient.get<Authorization[]>(environment.kycValidationEndpoint)
+  public async isValidKYC(walletAddress: string) {
+
+    const response = await this.httpClient.get<Authorization[]>(environment.kycValidationEndpoint, {
+      params: {
+        wallet: walletAddress
+      }
+    })
       .toPromise();
 
     return response;

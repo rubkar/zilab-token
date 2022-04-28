@@ -30,18 +30,30 @@ import { RoadmapComponent } from './components/roadmap/roadmap.component';
 import { IconSnackbarComponent } from './components/shared/icon-snackbar.component';
 import { TwoDigitDecimalNumberDirective } from './components/shared/two-digit-decimal-number.directive';
 import { SmartContectComponent } from './components/smart-contect/smart-contect.component';
-import { StatisticComponent } from './components/statistic/statistic.component';
+import { HowToBuyComponent } from './components/how-to-buy/how-to-buy.component';
 import { TokensComponent } from './components/tokens/tokens.component';
 import { HttpClientModule } from '@angular/common/http';
-
+import {RouterModule} from "@angular/router";
+import {AngularCountdownDateTimeModule} from "angular-countdown-date-time";
+import {MatInputModule} from '@angular/material/input';
+import {environment} from "../environments/environment";
+import {
+  RecaptchaModule,
+  RECAPTCHA_SETTINGS,
+  RecaptchaSettings,
+  RecaptchaFormsModule,
+  RECAPTCHA_V3_SITE_KEY,
+  RecaptchaV3Module
+} from 'ng-recaptcha';
+import {Ng2TelInputModule} from "ng2-tel-input";
 const MATERIAL_MODULES = [
   ReactiveFormsModule,
   MatFormFieldModule,
   MatSnackBarModule,
   MatOptionModule,
   MatTooltipModule,
+  MatInputModule
 ];
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,7 +62,7 @@ const MATERIAL_MODULES = [
     MainComponent,
     RoadmapComponent,
     PartnersComponent,
-    StatisticComponent,
+    HowToBuyComponent,
     EarthLightComponent,
     SmartContectComponent,
     TokensComponent,
@@ -73,10 +85,18 @@ const MATERIAL_MODULES = [
     FontAwesomeModule,
     FormsModule,
     CarouselModule,
-    HttpClientModule
+    HttpClientModule,
+    RouterModule.forRoot([]),
+    AngularCountdownDateTimeModule,
+    RecaptchaV3Module,
+    Ng2TelInputModule
   ],
   providers: [
-    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } },
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 5000 } },
+    {
+      provide: RECAPTCHA_V3_SITE_KEY,
+      useValue: environment.recaptchaV3SiteKey
+    },
   ],
   bootstrap: [AppComponent],
 })

@@ -16,7 +16,11 @@ import presaleAbi from '../contracts/abi/presale.json';
 import { SnackbarService } from '../shared/snackbar.service';
 import { AppConstants } from '../shared/utils/constants';
 import {WalletConnectService} from "../../services/wallet-connect.service";
-import {Authorization} from "../../authorization";
+import {ActivatedRoute} from "@angular/router";
+import {faFilePdf} from "@fortawesome/free-solid-svg-icons";
+import {faLock} from "@fortawesome/free-solid-svg-icons";
+import {faWallet} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket} from "@fortawesome/free-solid-svg-icons";
 
 type Token = {
   address: string;
@@ -32,6 +36,10 @@ type Token = {
   styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit, OnDestroy {
+  faFilePdf = faFilePdf;
+  faLock = faLock;
+  faWallet = faWallet;
+  faArrowRightFromBracket = faArrowRightFromBracket;
   tokenAddresses = [
     {
       address: '',
@@ -70,14 +78,19 @@ export class MainComponent implements OnInit, OnDestroy {
   lockedTokenAmount!: string;
 
   presaleContract!: any;
-  isValidKYC!: any;
+  isValidKYC!: boolean;
+  walletAddress!: string;
+  endTime = environment.preSaleEndDate;
+  environment = environment;
 
   constructor(
     public readonly snackbar: SnackbarService,
     private readonly fb: FormBuilder,
-    private walletConnectService: WalletConnectService
+    private walletConnectService: WalletConnectService,
+    private activatedRoute: ActivatedRoute
   ) {
 
+    this.isValidKYC = false;
     this.tokenBuyForm = this.fb.group({
       fromTokenSelect: new FormControl(
         { value: 'BNB', disabled: !this.metamaskConnected || this.loading },
@@ -108,11 +121,32 @@ export class MainComponent implements OnInit, OnDestroy {
       this.enableOrDisableBuyFormInputs(result);
     });
 
-    this.walletConnectService.isValidKYC().then(
-      (res: any) => { // Success
-        this.isValidKYC = res.authorized;
-      }
-    )
+    if (localStorage.getItem('wallet')) {
+      this.walletConnectService.isValidKYC(localStorage.getItem('wallet') ?? this.walletAddress).then(
+        (res: any) => { // Success
+          this.isValidKYC = res.authorized;
+        });
+    } else {
+      this.activatedRoute.queryParams.subscribe(params => {
+        let wallet = params['wallet'];
+        this.walletAddress = wallet;
+        if (this.walletAddress) {
+          this.walletConnectService.isValidKYC(this.walletAddress).then(
+            (res: any) => { // Success
+              this.isValidKYC = res.authorized;
+              localStorage.setItem('wallet', this.walletAddress);
+            }
+          )
+        }
+      });
+    }
+
+
+    // this.walletConnectService.isValidKYC(this.walletAddress).then(
+    //   (res: any) => { // Success
+    //     this.isValidKYC = res.authorized;
+    //   }
+    // )
 
     if (this.isValidKYC) {
       this.connectWallet();
@@ -126,11 +160,7 @@ export class MainComponent implements OnInit, OnDestroy {
   }
 
   connectOrBuyText(): string {
-    if (this.isValidKYC) {
-      return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
-    } else {
-      return 'Verify Your Account Before Buying The Tokens!';
-    }
+    return this.metamaskConnected ? 'Buy Token' : 'Connect to Wallet';
   }
 
   getSelectedTokenImage(name: string): string | undefined {
@@ -236,6 +266,11 @@ export class MainComponent implements OnInit, OnDestroy {
       this.fromTokenSelectControl?.enable();
       this.toTokenInputControl?.enable();
     }
+  }
+
+  public clearStorage()
+  {
+    localStorage.clear();
   }
 
   private calculateParityToFrom(
