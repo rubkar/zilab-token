@@ -50,7 +50,7 @@ export class MainComponent implements OnInit, OnDestroy {
     },
     {
       address: environment.aAddress,
-      token: 'A',
+      token: 'USDT',
       balance: '0',
       parityRate: '0',
       image: 'url(assets/images/x.png)',
@@ -90,7 +90,6 @@ export class MainComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute
   ) {
 
-    this.isValidKYC = false;
     this.tokenBuyForm = this.fb.group({
       fromTokenSelect: new FormControl(
         { value: 'BNB', disabled: !this.metamaskConnected || this.loading },
@@ -121,25 +120,13 @@ export class MainComponent implements OnInit, OnDestroy {
       this.enableOrDisableBuyFormInputs(result);
     });
 
-    if (localStorage.getItem('wallet')) {
-      this.walletConnectService.isValidKYC(localStorage.getItem('wallet') ?? this.walletAddress).then(
-        (res: any) => { // Success
-          this.isValidKYC = res.authorized;
-        });
-    } else {
       this.activatedRoute.queryParams.subscribe(params => {
         let wallet = params['wallet'];
         this.walletAddress = wallet;
         if (this.walletAddress) {
-          this.walletConnectService.isValidKYC(this.walletAddress).then(
-            (res: any) => { // Success
-              this.isValidKYC = res.authorized;
-              localStorage.setItem('wallet', this.walletAddress);
-            }
-          )
+          localStorage.setItem('wallet', this.walletAddress);
         }
       });
-    }
 
 
     // this.walletConnectService.isValidKYC(this.walletAddress).then(
@@ -148,9 +135,9 @@ export class MainComponent implements OnInit, OnDestroy {
     //   }
     // )
 
-    if (this.isValidKYC) {
+
       this.connectWallet();
-    }
+
   }
 
   ngOnDestroy(): void {
@@ -228,11 +215,7 @@ export class MainComponent implements OnInit, OnDestroy {
     }
 
     if (!this.metamaskConnected) {
-      if (!this.isValidKYC) {
-        this.verifyKYC();
-      } else {
         this.connectWallet();
-      }
     }
   }
 
@@ -387,14 +370,6 @@ export class MainComponent implements OnInit, OnDestroy {
       this.web3.utils.toBN(lockedTokenBalance['amount'])
     );
   };
-
-  private verifyKYC() {
-    const snackRef = this.snackbar.error('Please login into KYC platform to buy the tokens.', 'OK');
-    snackRef.afterDismissed().subscribe(() => {
-      window.open('https://wallet.gruuk.com', '_blank');
-    });
-    return;
-  }
 
   private buyToken = async () => {
     this.loadingSubject.next(true);

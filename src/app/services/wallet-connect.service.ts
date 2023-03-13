@@ -14,13 +14,13 @@ export class WalletConnectService {
 
   public async isValidKYC(walletAddress: string) {
 
-    const response = await this.httpClient.get<Authorization[]>(environment.kycValidationEndpoint, {
-      params: {
-        wallet: walletAddress
-      }
-    })
-      .toPromise();
+    // const response = await this.httpClient.get<Authorization[]>(environment.kycValidationEndpoint, {
+    //   params: {
+    //     wallet: walletAddress
+    //   }
+    // })
+    //   .toPromise();
 
-    return response;
+    // return response;
   }
 }

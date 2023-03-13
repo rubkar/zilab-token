@@ -14,7 +14,8 @@
             <div class="c2">
 
             </div>
-            <lib-angular-countdown-dateTime [endDateBind]="this.endTime" [dayText]="'days'" [hourText]="'hour'" [minutesText]="'minute'" [secondsText]="'second'"></lib-angular-countdown-dateTime>
+            <h2 style="font-size: 30px; font-weight: bold">Presale ends: 2022.12.31</h2>
+<!--            <lib-angular-countdown-dateTime [endDateBind]="'2022.12.31'" [dayText]="'days'" [hourText]="'hour'" [minutesText]="'minute'" [secondsText]="'second'"></lib-angular-countdown-dateTime>-->
 
 
             <div class="offer-buttons">
@@ -141,7 +142,7 @@
                       class="form-control"
                       aria-label="Text input with dropdown button"
                       formControlName="toTokenInput"
-                      placeholder="3469.9 XTC"
+                      placeholder="3469.9 ZILAB"
                       (keypress)="keyPressNumbersWithDecimal($event)"
                       (input)="toInputChange(toInput.value)"
                       #toInput
@@ -150,15 +151,9 @@
                 </div>
 
                 <div class="text-center connect-wallet">
-                  <p class="text-black" style="font-size:13px" *ngIf="isValidKYC && metamaskConnected">By clicking the “Buy now” button you agree to comply with all of the terms and conditions.</p>
+                  <p class="text-black" style="font-size:13px" *ngIf="metamaskConnected">By clicking the “Buy now” button you agree to comply with all of the terms and conditions.</p>
 
-
-                  <p class="text-black" *ngIf="!isValidKYC">
-                    Please <a class="text-black" style="color: #e85559 !important; font-weight: bold" href="https://wallet.gruuk.com/public/login">Login</a> or <a class="text-black" href="https://wallet.gruuk.com/public/register" style="color: #e85559 !important; font-weight: bold">Register</a>
-                    before buying the ${{ environment.tokenSymbol}} tokens!
-                  </p>
                   <button
-                    *ngIf="isValidKYC"
                     [disabled]="loading"
                     class="wallet hover-btn"
                     type="submit"
@@ -171,14 +166,6 @@
                     ></span>
                     {{ loading ? "Processing" : connectOrBuyText() }}
                   </button>
-
-                  <a *ngIf="isValidKYC"
-                     class="text-black" style="color: #e85559 !important; font-weight: bold; position: relative; top: 10px;"
-                     href="{{ environment.kycLogout}}"
-                     (click)="clearStorage()"
-                  >
-                    <fa-icon [icon]="faArrowRightFromBracket"></fa-icon> Logout
-                  </a>
                 </div>
               </form>
             </div>
@@ -291,7 +278,9 @@
       <div class="w-20">
         <a href="#">
           <div class="sec4-card trans">
-            <img src="../../../assets/images/{{ environment.logoName }}" alt="{{ environment.tokenName }}" style="height: 150px;" />
+            <a href="https://zilab.co" target="_blank">
+              <img src="../../../assets/images/{{ environment.logoName }}" alt="{{ environment.tokenName }}" style="height: 50px;" />
+            </a>
           </div>
         </a>
       </div>
